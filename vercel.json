@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "seekhowithrua-lms",
+  "buildCommand": null,
+  "outputDirectory": ".",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/$1" }
+  ]
+}
