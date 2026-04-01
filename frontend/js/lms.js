@@ -2,8 +2,30 @@
 
 // ==================== AUTHENTICATION SYSTEM ====================
 
+// Check URL params for token (cross-domain login support)
+function checkUrlForToken() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  const userData = urlParams.get('user');
+  
+  if (token && userData) {
+    // Save to localStorage
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', userData);
+    
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+    
+    return true;
+  }
+  return false;
+}
+
 // Check if user is logged in (from main app localStorage)
 function checkAuth() {
+  // First check URL for token (from main app redirect)
+  checkUrlForToken();
+  
   const token = localStorage.getItem('token') || localStorage.getItem('authToken');
   const userData = localStorage.getItem('user') || localStorage.getItem('userData');
   
