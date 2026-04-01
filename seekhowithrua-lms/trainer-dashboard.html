@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trainer Dashboard | SeekhoWithRua LMS</title>
+  <meta name="description" content="Trainer portal for managing courses, uploading YouTube videos, and tracking student engagement.">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lms.css">
+</head>
+<body>
+  <div class="particles" id="particles"></div>
+
+  <header>
+    <div class="logo">SeekhoWith<span>Rua LMS</span></div>
+    <nav>
+      <a href="index.html">Courses</a>
+      <a href="my-learning.html">My Learning</a>
+      <a href="trainer-dashboard.html" class="active">Trainer Portal</a>
+      <a href="https://app.seekhowithrua.com" target="_blank">Live Rooms</a>
+    </nav>
+  </header>
+
+  <main class="trainer-dashboard">
+    <div class="dashboard-header">
+      <h1>Trainer Dashboard</h1>
+      <p>Create and manage your courses with YouTube video integration</p>
+    </div>
+
+    <div class="dashboard-content">
+      <!-- Stats Cards -->
+      <section class="stats-section">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="trainerCourses">0</span>
+            <span class="stat-label">Your Courses</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="trainerVideos">0</span>
+            <span class="stat-label">Total Videos</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="trainerStudents">0</span>
+            <span class="stat-label">Students</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="trainerRevenue">₹0</span>
+            <span class="stat-label">Est. Revenue</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Create Course Section -->
+      <section class="form-section">
+        <h2>Create New Course</h2>
+        <form id="createCourseForm" class="course-form">
+          <div class="form-group">
+            <label for="courseTitle">Course Title *</label>
+            <input type="text" id="courseTitle" placeholder="e.g., Complete Python Bootcamp" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courseCategory">Category *</label>
+              <select id="courseCategory" required>
+                <option value="">Select Category</option>
+                <option value="python">Python</option>
+                <option value="data-science">Data Science</option>
+                <option value="web-dev">Web Development</option>
+                <option value="ai-ml">AI & Machine Learning</option>
+                <option value="mobile">Mobile Development</option>
+                <option value="database">Database</option>
+                <option value="english">English Communication</option>
+                <option value="career">Career & Interview</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="courseLevel">Level</label>
+              <select id="courseLevel">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="courseDescription">Description</label>
+            <textarea id="courseDescription" rows="3" placeholder="Describe what students will learn in this course..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="courseIcon">Icon Emoji</label>
+              <input type="text" id="courseIcon" placeholder="🐍" value="📚" maxlength="2">
+            </div>
+            <div class="form-group">
+              <label for="coursePrice">Price (₹)</label>
+              <input type="number" id="coursePrice" placeholder="0" value="0" min="0">
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">Create Course</button>
+        </form>
+      </section>
+
+      <!-- Add Videos Section -->
+      <section class="form-section" id="videoSection" style="display: none;">
+        <h2>Add Videos to <span id="editingCourseName"></span></h2>
+        <div class="alert-info">
+          <strong>💡 Tip:</strong> Use YouTube unlisted videos for better control. Paste the full YouTube URL.
+        </div>
+        <form id="addVideoForm" class="video-form">
+          <input type="hidden" id="editingCourseId">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="videoTitle">Video Title *</label>
+              <input type="text" id="videoTitle" placeholder="e.g., Introduction to Python" required>
+            </div>
+            <div class="form-group">
+              <label for="videoDuration">Duration *</label>
+              <input type="text" id="videoDuration" placeholder="e.g., 15:30" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="videoUrl">YouTube URL *</label>
+            <input type="url" id="videoUrl" placeholder="https://www.youtube.com/watch?v=..." required>
+          </div>
+          <div class="form-group">
+            <label for="videoModule">Module/Chapter</label>
+            <input type="text" id="videoModule" placeholder="e.g., Module 1: Getting Started">
+          </div>
+          <div class="form-group">
+            <label for="videoDescription">Video Description</label>
+            <textarea id="videoDescription" rows="2" placeholder="Brief description of video content..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Add Video</button>
+            <button type="button" class="btn-secondary" onclick="finishAddingVideos()">Finish Course</button>
+          </div>
+        </form>
+
+        <div class="video-list-preview">
+          <h3>Videos in this Course</h3>
+          <div id="previewVideoList" class="preview-list"></div>
+        </div>
+      </section>
+
+      <!-- My Courses Section -->
+      <section class="courses-section">
+        <h2>My Courses</h2>
+        <div class="trainer-courses-grid" id="trainerCoursesList"></div>
+      </section>
+
+      <!-- YouTube Guide -->
+      <section class="guide-section">
+        <h2>📹 How to Use YouTube Unlisted Videos</h2>
+        <div class="guide-steps">
+          <div class="guide-step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Upload to YouTube</h4>
+              <p>Upload your video to YouTube. During upload, select "Unlisted" visibility.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Copy the Link</h4>
+              <p>After upload, click "Share" and copy the full YouTube URL.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Paste in LMS</h4>
+              <p>Paste the URL in the "YouTube URL" field when adding videos to your course.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Benefits</h4>
+              <p>Unlisted videos won't appear in search but can be embedded here securely.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">SeekhoWith<span>Rua</span></div>
+        <p>Making quality education accessible through AI and community.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Learn</h4>
+          <a href="index.html">All Courses</a>
+          <a href="my-learning.html">My Learning</a>
+          <a href="#">Certificates</a>
+        </div>
+        <div class="footer-column">
+          <h4>Teach</h4>
+          <a href="trainer-dashboard.html">Trainer Portal</a>
+          <a href="#">Create Course</a>
+          <a href="#">Guidelines</a>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="https://seekhowithrua.com">Main Site</a>
+          <a href="https://app.seekhowithrua.com">Live Rooms</a>
+          <a href="https://gaming.seekhowithrua.com">Gaming Lab</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SeekhoWithRua. Built by Master Rua.</p>
+    </div>
+  </footer>
+
+  <script src="js/lms.js"></script>
+  <script>
+    let currentEditingCourse = null;
+    let tempVideos = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTrainerStats();
+      loadTrainerCourses();
+
+      document.getElementById('createCourseForm').addEventListener('submit', handleCreateCourse);
+      document.getElementById('addVideoForm').addEventListener('submit', handleAddVideo);
+    });
+
+    function handleCreateCourse(e) {
+      e.preventDefault();
+
+      const course = {
+        id: 'course_' + Date.now(),
+        title: document.getElementById('courseTitle').value,
+        category: document.getElementById('courseCategory').value,
+        level: document.getElementById('courseLevel').value,
+        description: document.getElementById('courseDescription').value,
+        icon: document.getElementById('courseIcon').value || '📚',
+        price: parseInt(document.getElementById('coursePrice').value) || 0,
+        videos: [],
+        gradient: getCategoryGradient(document.getElementById('courseCategory').value),
+        trainer: 'current_trainer'
+      };
+
+      saveCourse(course);
+
+      currentEditingCourse = course;
+      tempVideos = [];
+
+      document.getElementById('editingCourseId').value = course.id;
+      document.getElementById('editingCourseName').textContent = course.title;
+      document.getElementById('videoSection').style.display = 'block';
+
+      showNotification('Course created! Now add videos.');
+      document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+
+      loadTrainerStats();
+      loadTrainerCourses();
+    }
+
+    function handleAddVideo(e) {
+      e.preventDefault();
+
+      const video = {
+        title: document.getElementById('videoTitle').value,
+        duration: document.getElementById('videoDuration').value,
+        youtubeUrl: document.getElementById('videoUrl').value,
+        module: document.getElementById('videoModule').value || 'General',
+        description: document.getElementById('videoDescription').value
+      };
+
+      tempVideos.push(video);
+      updatePreviewList();
+
+      document.getElementById('addVideoForm').reset();
+      document.getElementById('videoTitle').focus();
+
+      showNotification('Video added! Add more or finish course.');
+    }
+
+    function updatePreviewList() {
+      const list = document.getElementById('previewVideoList');
+      if (tempVideos.length === 0) {
+        list.innerHTML = '<p class="empty-preview">No videos added yet.</p>';
+        return;
+      }
+
+      list.innerHTML = tempVideos.map((video, index) => `
+        <div class="preview-video-item">
+          <span class="video-index">${index + 1}</span>
+          <div class="preview-info">
+            <h4>${video.title}</h4>
+            <span>${video.module} • ${video.duration}</span>
+          </div>
+          <button class="btn-remove" onclick="removeVideo(${index})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function removeVideo(index) {
+      tempVideos.splice(index, 1);
+      updatePreviewList();
+    }
+
+    function finishAddingVideos() {
+      if (!currentEditingCourse) return;
+
+      if (tempVideos.length === 0) {
+        showNotification('Please add at least one video!');
+        return;
+      }
+
+      currentEditingCourse.videos = [...tempVideos];
+      updateCourse(currentEditingCourse);
+
+      tempVideos = [];
+      currentEditingCourse = null;
+
+      document.getElementById('createCourseForm').reset();
+      document.getElementById('videoSection').style.display = 'none';
+      document.getElementById('previewVideoList').innerHTML = '<p class="empty-preview">No videos added yet.</p>';
+
+      showNotification('Course published successfully!');
+      loadTrainerStats();
+      loadTrainerCourses();
+    }
+
+    function loadTrainerStats() {
+      const courses = getCourses().filter(c => c.trainer === 'current_trainer');
+      const totalVideos = courses.reduce((sum, c) => sum + c.videos.length, 0);
+
+      document.getElementById('trainerCourses').textContent = courses.length;
+      document.getElementById('trainerVideos').textContent = totalVideos;
+      document.getElementById('trainerStudents').textContent = Math.floor(Math.random() * 500) + 50;
+      document.getElementById('trainerRevenue').textContent = '₹' + (courses.length * 2999).toLocaleString();
+    }
+
+    function loadTrainerCourses() {
+      const courses = getCourses().filter(c => c.trainer === 'current_trainer');
+      const container = document.getElementById('trainerCoursesList');
+
+      if (courses.length === 0) {
+        container.innerHTML = `
+          <div class="empty-courses">
+            <div class="empty-icon">📝</div>
+            <p>No courses yet. Create your first course above!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = courses.map(course => {
+        const progress = getCourseProgress(course.id);
+        const totalStudents = Math.floor(Math.random() * 200) + 10;
+        return `
+          <div class="trainer-course-card">
+            <div class="course-header" style="background: ${course.gradient};">
+              <span class="course-icon">${course.icon}</span>
+              <span class="course-level">${course.level}</span>
+            </div>
+            <div class="course-info">
+              <h3>${course.title}</h3>
+              <p>${course.videos.length} videos • ${totalStudents} students</p>
+              <div class="course-stats-bar">
+                <span>Price: ₹${course.price}</span>
+                <span>${progress.completedVideos.length} completions</span>
+              </div>
+            </div>
+            <div class="course-actions">
+              <button class="btn-edit" onclick="editCourse('${course.id}')">Edit</button>
+              <button class="btn-view" onclick="viewCourse('${course.id}')">View</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function editCourse(courseId) {
+      const courses = getCourses();
+      const course = courses.find(c => c.id === courseId);
+      if (!course) return;
+
+      currentEditingCourse = course;
+      tempVideos = [...course.videos];
+
+      document.getElementById('editingCourseId').value = course.id;
+      document.getElementById('editingCourseName').textContent = course.title;
+      document.getElementById('videoSection').style.display = 'block';
+
+      updatePreviewList();
+      document.getElementById('videoSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function viewCourse(courseId) {
+      window.open(`course.html?course=${courseId}`, '_blank');
+    }
+
+    function getCategoryGradient(category) {
+      const gradients = {
+        'python': 'linear-gradient(135deg, #3776ab, #ffd43b)',
+        'data-science': 'linear-gradient(135deg, #7c3aed, #00d4ff)',
+        'web-dev': 'linear-gradient(135deg, #61dafb, #f7df1e)',
+        'ai-ml': 'linear-gradient(135deg, #ff6b6b, #4ecdc4)',
+        'mobile': 'linear-gradient(135deg, #61dafb, #764abc)',
+        'database': 'linear-gradient(135deg, #00758f, #f29111)',
+        'english': 'linear-gradient(135deg, #e74c3c, #3498db)',
+        'career': 'linear-gradient(135deg, #2ecc71, #27ae60)'
+      };
+      return gradients[category] || 'linear-gradient(135deg, #7c3aed, #00d4ff)';
+    }
+  </script>
+</body>
+</html>
