@@ -1,5 +1,39 @@
 // SeekhoWithRua LMS JavaScript
 
+// ─── CROSS-DOMAIN AUTHENTICATION HANDLER ───
+// Handle login from main app (seekhowithrua.com)
+function checkMainAppAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+  const userData = urlParams.get('user');
+  
+  if (token && userData) {
+    try {
+      // Parse user data from main app
+      const user = JSON.parse(decodeURIComponent(userData));
+      
+      // Store in localStorage for LMS
+      localStorage.setItem('cosmos_auth_token', token);
+      localStorage.setItem('cosmos_user', JSON.stringify(user));
+      
+      // Clean up URL (remove token and user params)
+      const url = new URL(window.location.href);
+      url.searchParams.delete('token');
+      url.searchParams.delete('user');
+      window.history.replaceState({}, '', url.toString());
+      
+      console.log('Authenticated via main app:', user.email);
+      return true;
+    } catch (e) {
+      console.error('Failed to parse auth data:', e);
+    }
+  }
+  return false;
+}
+
+// Auto-check on load
+checkMainAppAuth();
+
 // Course Data - 8 Pre-populated Courses
 const defaultCourses = [
   {
