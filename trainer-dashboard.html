@@ -411,20 +411,85 @@
 
   <script src="js/lms.js"></script>
   <script>
+    // ─── VISUAL LOCK OVERLAY ───
+    function showLockOverlay(message, redirectUrl, subMessage, icon = '🔒', color = '#7c3aed') {
+      const overlay = document.createElement('div');
+      overlay.id = 'authLockOverlay';
+      overlay.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(4, 4, 15, 0.95);
+          backdrop-filter: blur(10px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          font-family: 'Orbitron', sans-serif;
+        ">
+          <div style="
+            width: 120px;
+            height: 120px;
+            border: 3px solid ${color};
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+          ">${icon}</div>
+          <h2 style="
+            color: #fff;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-align: center;
+          ">${message}</h2>
+          <p style="
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 400px;
+          ">${subMessage}</p>
+          <a href="${redirectUrl}" style="
+            padding: 15px 40px;
+            background: linear-gradient(135deg, ${color}, ${color === '#e74c3c' ? '#c0392b' : '#00d4ff'});
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: transform 0.2s;
+          " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+            ${icon === '🚫' ? '← Go Back' : '🔐 Login'}
+          </a>
+        </div>
+        <style>
+          @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 ${color}66; }
+            50% { box-shadow: 0 0 0 20px ${color}00; }
+          }
+        </style>
+      `;
+      document.body.appendChild(overlay);
+    }
+
     // ─── TRAINER AUTHENTICATION CHECK ───
-    // Only Master Rua (Sachin) can access the trainer portal
     const currentUser = JSON.parse(localStorage.getItem('cosmos_user') || 'null');
     const authToken = localStorage.getItem('cosmos_auth_token');
     
     // Check if user is logged in
     if (!currentUser || !authToken) {
-      // Not logged in - redirect to enroll
       const currentUrl = encodeURIComponent(window.location.href);
-      window.location.href = `enroll.html?redirect=${currentUrl}`;
+      showLockOverlay('Trainer Portal Locked', `enroll.html?redirect=${currentUrl}`, 'Please log in to access trainer features');
     }
     
     // Check if user is the trainer (Master Rua)
-    // Allow only: seekhowithrua@gmail.com, or name containing "Sachin", "Master", or "Rua"
     const isTrainer = currentUser && (
       currentUser.email === 'seekhowithrua@gmail.com' ||
       currentUser.email?.includes('sachin') ||
@@ -438,9 +503,8 @@
     );
     
     if (!isTrainer) {
-      // Student trying to access trainer portal - redirect to their learning dashboard
-      alert('Access Denied: This area is restricted to trainers only.');
-      window.location.href = 'my-learning.html';
+      // Student trying to access trainer portal
+      showLockOverlay('Access Denied', 'my-learning.html', 'This area is restricted to trainers only', '🚫', '#e74c3c');
     }
 
     let currentEditingCourse = null;
