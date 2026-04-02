@@ -24,59 +24,23 @@
   <main class="learning-dashboard">
     <div class="dashboard-header">
       <h1>My Learning Journey</h1>
-      <div class="stats-overview">
+      <div class="overall-stats">
         <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-value" id="coursesCompleted">0</div>
-          <div class="stat-label">Courses Completed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🎮</div>
-          <div class="stat-value" id="gamesPlayed">0</div>
-          <div class="stat-label">Games Played</div>
+          <span class="stat-value" id="enrolledCount">0</span>
+          <span class="stat-label">Enrolled</span>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">🏆</div>
-          <div class="stat-value" id="totalPoints">0</div>
-          <div class="stat-label">Total Points</div>
+          <span class="stat-value" id="inProgressCount">0</span>
+          <span class="stat-label">In Progress</span>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-value" id="globalRank">-</div>
-          <div class="stat-label">Global Rank</div>
+          <span class="stat-value" id="completedCount">0</span>
+          <span class="stat-label">Completed</span>
         </div>
-      </div>
-
-      <!-- Gaming Scores Section -->
-      <div class="section-header">
-        <h2>🎮 Gaming Scores</h2>
-        <a href="https://gaming.seekhowithrua.com" target="_blank" class="btn-play">Play Games →</a>
-      </div>
-      <div class="gaming-scores" id="gamingScores">
-        <div class="empty-state">
-          <div class="empty-icon">🎮</div>
-          <p>No gaming scores yet</p>
-          <a href="https://gaming.seekhowithrua.com" target="_blank">Start playing to earn points!</a>
+        <div class="stat-card">
+          <span class="stat-value" id="certificatesCount">0</span>
+          <span class="stat-label">Certificates</span>
         </div>
-      </div>
-
-      <!-- Quiz Results Section -->
-      <div class="section-header">
-        <h2>📝 Quiz Results</h2>
-      </div>
-      <div class="quiz-results" id="quizResults">
-        <div class="empty-state">
-          <div class="empty-icon">📝</div>
-          <p>No quiz results yet</p>
-        </div>
-      </div>
-
-      <!-- Achievements Section -->
-      <div class="section-header">
-        <h2>🏆 Achievements</h2>
-      </div>
-      <div class="achievements-grid" id="achievementsGrid">
-        <!-- Achievements will be loaded here -->
       </div>
     </div>
 
