@@ -175,7 +175,8 @@
     
     if (!currentUser || !authToken) {
       const currentUrl = encodeURIComponent(window.location.href);
-      const loginUrl = `enroll.html?redirect=${currentUrl}`;
+      // Redirect to main app login with return URL
+      const loginUrl = `https://seekhowithrua.com/login?redirect=${currentUrl}`;
       showLockOverlay('My Learning Locked', loginUrl);
     }
 
