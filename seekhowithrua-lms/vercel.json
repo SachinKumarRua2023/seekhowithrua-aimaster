@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "seekhowithrua-lms",
   "routes": [
     { "src": "/(.*)", "dest": "/$1" }
   ],
