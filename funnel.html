@@ -55,12 +55,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://www.youtube.com">
 <link rel="dns-prefetch" href="https://wa.me">
+<link rel="dns-prefetch" href="https://www.emailjs.com">
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <!-- Razorpay Checkout -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- EmailJS for email notifications -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // Initialize EmailJS (replace with your actual public key)
+  emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+</script>
 
 <!-- Schema.org Structured Data -->
 <script type="application/ld+json">
@@ -1429,16 +1436,29 @@
 
   // ─── RAZORPAY PAYMENT INTEGRATION ───
   function openRazorpayPayment() {
+    // Collect user details before payment
+    const userEmail = prompt("Please enter your email for payment receipt:");
+    if (!userEmail || !userEmail.includes('@')) {
+      alert("Valid email required for enrollment confirmation");
+      return;
+    }
+    
+    const userName = prompt("Please enter your full name:");
+    if (!userName) {
+      alert("Name required for enrollment");
+      return;
+    }
+
     const options = {
-      key: "rzp_test_SYNmgL82IxXJu6", // TEST KEY - Replace with live key in production
-      amount: 899900, // ₹8,999 in paise
+      key: "rzp_test_SYNmgL82IxXJu6",
+      amount: 899900,
       currency: "INR",
       name: "SeekhoWithRua",
       description: "AI + Full Stack 6-Track Bundle (First 20 Students)",
       image: "https://seekhowithrua.com/logo.png",
       prefill: {
-        name: "",
-        email: "",
+        name: userName,
+        email: userEmail,
         contact: ""
       },
       theme: {
@@ -1450,6 +1470,8 @@
           paymentId: response.razorpay_payment_id,
           amount: 8999,
           course: "AI + Full Stack Bundle",
+          studentName: userName,
+          studentEmail: userEmail,
           timestamp: new Date().toISOString()
         };
         
@@ -1461,9 +1483,23 @@
         });
         localStorage.setItem('lms_enrollments', JSON.stringify(enrollments));
         
+        // Store enrolled student for trainer notifications
+        const enrolledStudents = JSON.parse(localStorage.getItem('lms_enrolled_students') || '[]');
+        enrolledStudents.push({
+          id: 'student_' + Date.now(),
+          name: userName,
+          email: userEmail,
+          course: "AI + Full Stack Bundle",
+          paymentId: response.razorpay_payment_id,
+          enrolledAt: new Date().toISOString()
+        });
+        localStorage.setItem('lms_enrolled_students', JSON.stringify(enrolledStudents));
+        
+        // Send email receipt via EmailJS
+        sendPaymentReceipt(userName, userEmail, response.razorpay_payment_id);
+        
         // Redirect to success page
-        alert('Payment successful! Payment ID: ' + response.razorpay_payment_id);
-        window.location.href = 'payment-success.html?payment=' + response.razorpay_payment_id;
+        window.location.href = 'payment-success.html?payment=' + response.razorpay_payment_id + '&email=' + encodeURIComponent(userEmail);
       },
       modal: {
         ondismiss: function() {
@@ -1480,6 +1516,59 @@
     rzp.on('payment.failed', function(response) {
       alert('Payment failed: ' + response.error.description);
     });
+  }
+  
+  // ─── EMAILJS PAYMENT RECEIPT ───
+  function sendPaymentReceipt(name, email, paymentId) {
+    // EmailJS template parameters
+    const templateParams = {
+      to_name: name,
+      to_email: email,
+      payment_id: paymentId,
+      amount: "₹8,999",
+      course_name: "AI + Full Stack 6-Track Bundle",
+      payment_date: new Date().toLocaleDateString('en-IN'),
+      trainer_name: "Sachin Kumar (Master Rua)",
+      trainer_email: "seekhowithrua@gmail.com",
+      support_whatsapp: "+91-88267-76018",
+      course_access_link: "https://lms.seekhowithrua.com/course.html",
+      next_steps: "1. Check your email for session schedule\n2. Join WhatsApp group: https://wa.me/918826776018\n3. Access course materials at lms.seekhowithrua.com"
+    };
+    
+    // Send email using EmailJS
+    // NOTE: Replace service_id and template_id with your actual EmailJS credentials
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+      .then(function(response) {
+        console.log('Payment receipt sent:', response);
+        // Also notify trainer
+        notifyTrainerOfEnrollment(name, email, paymentId);
+      })
+      .catch(function(error) {
+        console.error('Email send failed:', error);
+      });
+  }
+  
+  // ─── NOTIFY TRAINER OF NEW ENROLLMENT ───
+  function notifyTrainerOfEnrollment(studentName, studentEmail, paymentId) {
+    const trainerNotificationParams = {
+      to_name: "Sachin Kumar",
+      to_email: "seekhowithrua@gmail.com",
+      subject: "New Enrollment - AI + Full Stack Bundle",
+      student_name: studentName,
+      student_email: studentEmail,
+      payment_id: paymentId,
+      amount: "₹8,999",
+      enrollment_time: new Date().toLocaleString('en-IN'),
+      total_enrollments: JSON.parse(localStorage.getItem('lms_enrolled_students') || '[]').length
+    };
+    
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TRAINER_TEMPLATE_ID", trainerNotificationParams)
+      .then(function(response) {
+        console.log('Trainer notified:', response);
+      })
+      .catch(function(error) {
+        console.error('Trainer notification failed:', error);
+      });
   }
 </script>
 </body>

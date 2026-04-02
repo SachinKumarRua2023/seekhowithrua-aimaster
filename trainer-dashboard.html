@@ -7,6 +7,12 @@
   <meta name="description" content="Trainer portal for managing courses, uploading YouTube videos, and tracking student engagement.">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/lms.css">
+  <!-- EmailJS for email notifications -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // Initialize EmailJS (replace with your actual public key)
+    emailjs.init("YOUR_EMAILJS_PUBLIC_KEY");
+  </script>
 </head>
 <body>
   <div class="particles" id="particles"></div>
@@ -139,6 +145,83 @@
         <div class="video-list-preview">
           <h3>Videos in this Course</h3>
           <div id="previewVideoList" class="preview-list"></div>
+        </div>
+      </section>
+
+      <!-- Session Scheduling Section -->
+      <section class="form-section" id="sessionSection">
+        <h2>📅 Schedule Live Session</h2>
+        <p class="section-desc">Schedule live classes and notify all enrolled students via email</p>
+        
+        <form id="scheduleSessionForm" class="course-form">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="sessionTitle">Session Title *</label>
+              <input type="text" id="sessionTitle" placeholder="e.g., Python Basics - Day 1" required>
+            </div>
+            <div class="form-group">
+              <label for="sessionCourse">Course *</label>
+              <select id="sessionCourse" required>
+                <option value="">Select Course</option>
+                <option value="ai-fullstack-bundle">AI + Full Stack Bundle</option>
+                <option value="python">Python</option>
+                <option value="data-science">Data Science</option>
+                <option value="web-dev">Web Development</option>
+                <option value="ai-ml">AI & Machine Learning</option>
+                <option value="mobile">Mobile Development</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="sessionDate">Date *</label>
+              <input type="date" id="sessionDate" required>
+            </div>
+            <div class="form-group">
+              <label for="sessionTime">Time *</label>
+              <input type="time" id="sessionTime" required>
+            </div>
+            <div class="form-group">
+              <label for="sessionDuration">Duration</label>
+              <select id="sessionDuration">
+                <option value="60">1 hour</option>
+                <option value="90">1.5 hours</option>
+                <option value="120" selected>2 hours</option>
+                <option value="180">3 hours</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="sessionMeetingLink">Meeting Link (Google Meet/Zoom) *</label>
+            <input type="url" id="sessionMeetingLink" placeholder="https://meet.google.com/..." required>
+          </div>
+          
+          <div class="form-group">
+            <label for="sessionDescription">Session Description</label>
+            <textarea id="sessionDescription" rows="3" placeholder="What will be covered in this session..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="emailStudents" checked>
+              📧 Send email notification to all enrolled students
+            </label>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">📅 Schedule Session</button>
+            <button type="button" class="btn-secondary" onclick="viewScheduledSessions()">📋 View All Sessions</button>
+          </div>
+        </form>
+        
+        <!-- Scheduled Sessions List -->
+        <div id="scheduledSessionsList" style="margin-top: 24px;">
+          <h3>Upcoming Sessions</h3>
+          <div id="sessionsListContainer" class="preview-list">
+            <p class="empty-preview">No sessions scheduled yet.</p>
+          </div>
         </div>
       </section>
 
@@ -719,15 +802,231 @@
       }, 1000);
     }
     
-    // Update page load to initialize student selector
+    // Update page load to initialize student selector and session form
     document.addEventListener('DOMContentLoaded', () => {
       loadTrainerStats();
       loadTrainerCourses();
-      loadStudentsForTrainer(); // Load students for activity section
+      loadStudentsForTrainer();
+      loadScheduledSessions(); // Load scheduled sessions
 
       document.getElementById('createCourseForm').addEventListener('submit', handleCreateCourse);
       document.getElementById('addVideoForm').addEventListener('submit', handleAddVideo);
+      document.getElementById('scheduleSessionForm').addEventListener('submit', handleScheduleSession);
     });
+    
+    // ─── SESSION SCHEDULING FUNCTIONS ───
+    
+    function handleScheduleSession(e) {
+      e.preventDefault();
+      
+      const session = {
+        id: 'session_' + Date.now(),
+        title: document.getElementById('sessionTitle').value,
+        course: document.getElementById('sessionCourse').value,
+        courseName: document.getElementById('sessionCourse').options[document.getElementById('sessionCourse').selectedIndex].text,
+        date: document.getElementById('sessionDate').value,
+        time: document.getElementById('sessionTime').value,
+        duration: document.getElementById('sessionDuration').value,
+        meetingLink: document.getElementById('sessionMeetingLink').value,
+        description: document.getElementById('sessionDescription').value,
+        scheduledAt: new Date().toISOString(),
+        status: 'upcoming'
+      };
+      
+      // Store session in localStorage
+      const sessions = JSON.parse(localStorage.getItem('lms_scheduled_sessions') || '[]');
+      sessions.push(session);
+      localStorage.setItem('lms_scheduled_sessions', JSON.stringify(sessions));
+      
+      // Check if email notification is requested
+      const shouldEmailStudents = document.getElementById('emailStudents').checked;
+      
+      if (shouldEmailStudents) {
+        // Send email to all enrolled students
+        sendSessionNotificationToStudents(session);
+      }
+      
+      // Reset form
+      document.getElementById('scheduleSessionForm').reset();
+      
+      // Refresh sessions list
+      loadScheduledSessions();
+      
+      showNotification(shouldEmailStudents ? 'Session scheduled & email notifications sent!' : 'Session scheduled successfully!');
+    }
+    
+    function sendSessionNotificationToStudents(session) {
+      // Get all enrolled students
+      const enrolledStudents = JSON.parse(localStorage.getItem('lms_enrolled_students') || '[]');
+      
+      if (enrolledStudents.length === 0) {
+        console.log('No enrolled students to notify');
+        return;
+      }
+      
+      // Format session details for email
+      const sessionDateTime = new Date(session.date + 'T' + session.time);
+      const formattedDate = sessionDateTime.toLocaleDateString('en-IN', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      const formattedTime = sessionDateTime.toLocaleTimeString('en-IN', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      
+      // Send email to each student using EmailJS
+      enrolledStudents.forEach(student => {
+        const templateParams = {
+          to_name: student.name,
+          to_email: student.email,
+          session_title: session.title,
+          course_name: session.courseName,
+          session_date: formattedDate,
+          session_time: formattedTime,
+          session_duration: session.duration + ' minutes',
+          meeting_link: session.meetingLink,
+          session_description: session.description || 'No description provided',
+          trainer_name: "Sachin Kumar (Master Rua)",
+          trainer_email: "seekhowithrua@gmail.com",
+          support_whatsapp: "+91-88267-76018",
+          add_to_calendar_link: generateCalendarLink(session)
+        };
+        
+        // Send email using EmailJS
+        // NOTE: Replace with actual EmailJS credentials
+        emailjs.send("YOUR_SERVICE_ID", "YOUR_SESSION_TEMPLATE_ID", templateParams)
+          .then(function(response) {
+            console.log('Session notification sent to', student.email, response);
+          })
+          .catch(function(error) {
+            console.error('Failed to send to', student.email, error);
+          });
+      });
+    }
+    
+    function generateCalendarLink(session) {
+      // Generate Google Calendar link
+      const startDateTime = new Date(session.date + 'T' + session.time);
+      const endDateTime = new Date(startDateTime.getTime() + parseInt(session.duration) * 60000);
+      
+      const formatForCalendar = (date) => {
+        return date.toISOString().replace(/-|:|\.\d{3}/g, '');
+      };
+      
+      const params = new URLSearchParams({
+        action: 'TEMPLATE',
+        text: session.title,
+        dates: formatForCalendar(startDateTime) + '/' + formatForCalendar(endDateTime),
+        details: session.description || '',
+        location: session.meetingLink
+      });
+      
+      return 'https://calendar.google.com/calendar/render?' + params.toString();
+    }
+    
+    function loadScheduledSessions() {
+      const sessions = JSON.parse(localStorage.getItem('lms_scheduled_sessions') || '[]');
+      const container = document.getElementById('sessionsListContainer');
+      
+      // Filter upcoming sessions
+      const now = new Date();
+      const upcomingSessions = sessions.filter(s => {
+        const sessionDateTime = new Date(s.date + 'T' + s.time);
+        return sessionDateTime > now && s.status === 'upcoming';
+      }).sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+      
+      if (upcomingSessions.length === 0) {
+        container.innerHTML = '<p class="empty-preview">No upcoming sessions scheduled.</p>';
+        return;
+      }
+      
+      container.innerHTML = upcomingSessions.map((session, index) => {
+        const sessionDateTime = new Date(session.date + 'T' + session.time);
+        const formattedDate = sessionDateTime.toLocaleDateString('en-IN', { 
+          month: 'short', 
+          day: 'numeric' 
+        });
+        const formattedTime = sessionDateTime.toLocaleTimeString('en-IN', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          hour12: true 
+        });
+        
+        return `
+          <div class="preview-video-item" style="border-left: 4px solid var(--rua-orange);">
+            <span class="video-index">📅</span>
+            <div class="preview-info" style="flex: 1;">
+              <h4>${session.title}</h4>
+              <span>${session.courseName} • ${formattedDate} at ${formattedTime} • ${session.duration} mins</span>
+              <a href="${session.meetingLink}" target="_blank" style="color: var(--rua-orange); font-size: 12px; text-decoration: none;">🔗 Join Link</a>
+            </div>
+            <button class="btn-remove" onclick="resendSessionEmail('${session.id}')" title="Resend Email">📧</button>
+            <button class="btn-remove" onclick="cancelSession('${session.id}')" title="Cancel">×</button>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function resendSessionEmail(sessionId) {
+      const sessions = JSON.parse(localStorage.getItem('lms_scheduled_sessions') || '[]');
+      const session = sessions.find(s => s.id === sessionId);
+      
+      if (session) {
+        sendSessionNotificationToStudents(session);
+        showNotification('Session notification resent to all students!');
+      }
+    }
+    
+    function cancelSession(sessionId) {
+      if (!confirm('Are you sure you want to cancel this session?')) return;
+      
+      const sessions = JSON.parse(localStorage.getItem('lms_scheduled_sessions') || '[]');
+      const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+      
+      if (sessionIndex > -1) {
+        sessions[sessionIndex].status = 'cancelled';
+        localStorage.setItem('lms_scheduled_sessions', JSON.stringify(sessions));
+        loadScheduledSessions();
+        
+        // Notify students of cancellation
+        const session = sessions[sessionIndex];
+        sendCancellationNotification(session);
+        
+        showNotification('Session cancelled and students notified.');
+      }
+    }
+    
+    function sendCancellationNotification(session) {
+      const enrolledStudents = JSON.parse(localStorage.getItem('lms_enrolled_students') || '[]');
+      
+      enrolledStudents.forEach(student => {
+        const templateParams = {
+          to_name: student.name,
+          to_email: student.email,
+          session_title: session.title,
+          course_name: session.courseName,
+          cancellation_reason: 'Cancelled by trainer',
+          trainer_name: "Sachin Kumar (Master Rua)",
+          support_whatsapp: "+91-88267-76018"
+        };
+        
+        emailjs.send("YOUR_SERVICE_ID", "YOUR_CANCELLATION_TEMPLATE_ID", templateParams)
+          .then(function(response) {
+            console.log('Cancellation notification sent to', student.email);
+          })
+          .catch(function(error) {
+            console.error('Failed to send cancellation to', student.email, error);
+          });
+      });
+    }
+    
+    function viewScheduledSessions() {
+      document.getElementById('scheduledSessionsList').scrollIntoView({ behavior: 'smooth' });
+    }
 
     function getCategoryGradient(category) {
       const gradients = {
