@@ -138,14 +138,17 @@
     }
 
     // ─── AUTHENTICATION CHECK ───
+    // First check if auth came from main app (lms.js handles this)
+    // Then check localStorage for existing session
     const currentUser = JSON.parse(localStorage.getItem('cosmos_user') || 'null');
     const authToken = localStorage.getItem('cosmos_auth_token');
     
+    // Only show lock if no valid session exists
     if (!currentUser || !authToken) {
       const currentUrl = encodeURIComponent(window.location.href);
       // Redirect to main app login with return URL
-      const loginUrl = `https://seekhowithrua.com/login?redirect=${currentUrl}`;
-      showLockOverlay('Course Locked', loginUrl);
+      const loginUrl = `https://app.seekhowithrua.com/login?redirect=${currentUrl}`;
+      showLockOverlay('My Learning Locked', loginUrl);
     }
 
     let player;

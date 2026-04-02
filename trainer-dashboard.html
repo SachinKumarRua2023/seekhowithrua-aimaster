@@ -493,7 +493,7 @@
     // Check if user is logged in
     if (!currentUser || !authToken) {
       const currentUrl = encodeURIComponent(window.location.href);
-      showLockOverlay('Trainer Portal Locked', `enroll.html?redirect=${currentUrl}`, 'Please log in to access trainer features');
+      showLockOverlay('Trainer Portal Locked', `https://app.seekhowithrua.com/login?redirect=${currentUrl}`, 'Please log in to access trainer features');
     }
     
     // Check if user is an approved trainer
