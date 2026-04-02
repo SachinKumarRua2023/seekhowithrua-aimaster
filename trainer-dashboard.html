@@ -480,6 +480,13 @@
     }
 
     // ─── TRAINER AUTHENTICATION CHECK ───
+    // Define approved trainer emails
+    const TRAINER_EMAILS = [
+      'seekhowithrua@gmail.com',
+      'sacchinrua@gmail.com',
+      'master@gmail.com'
+    ];
+    
     const currentUser = JSON.parse(localStorage.getItem('cosmos_user') || 'null');
     const authToken = localStorage.getItem('cosmos_auth_token');
     
@@ -489,15 +496,19 @@
       showLockOverlay('Trainer Portal Locked', `enroll.html?redirect=${currentUrl}`, 'Please log in to access trainer features');
     }
     
-    // Check if user is the trainer (Master Rua)
+    // Check if user is an approved trainer
+    const userEmail = currentUser?.email?.toLowerCase() || '';
+    const userName = currentUser?.name?.toLowerCase() || '';
+    
     const isTrainer = currentUser && (
-      currentUser.email === 'seekhowithrua@gmail.com' ||
-      currentUser.email?.includes('sachin') ||
-      currentUser.email?.includes('master') ||
-      currentUser.email?.includes('rua') ||
-      currentUser.name?.toLowerCase().includes('sachin') ||
-      currentUser.name?.toLowerCase().includes('master') ||
-      currentUser.name?.toLowerCase().includes('rua') ||
+      TRAINER_EMAILS.includes(userEmail) ||
+      TRAINER_EMAILS.some(email => userEmail.includes(email.split('@')[0])) ||
+      userEmail.includes('sachin') ||
+      userEmail.includes('master') ||
+      userEmail.includes('rua') ||
+      userName.includes('sachin') ||
+      userName.includes('master') ||
+      userName.includes('rua') ||
       currentUser.role === 'trainer' ||
       currentUser.isTrainer === true
     );
