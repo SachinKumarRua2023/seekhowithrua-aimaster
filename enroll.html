@@ -351,14 +351,40 @@
 
   <script src="js/lms.js"></script>
   <script>
-    // Get course ID from URL
+    // Get parameters from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const courseId = urlParams.get('course');
+    const directCourseId = urlParams.get('course');
+    const redirectUrl = urlParams.get('redirect');
+    const paymentStatus = urlParams.get('payment');
+    
+    // Try to extract course ID from redirect URL if present
+    let courseId = directCourseId;
+    let returnUrl = redirectUrl;
+    
+    if (!courseId && redirectUrl) {
+      try {
+        const decodedRedirect = decodeURIComponent(redirectUrl);
+        const redirectParams = new URLSearchParams(new URL(decodedRedirect).search);
+        courseId = redirectParams.get('course');
+      } catch (e) {
+        console.error('Failed to parse redirect URL:', e);
+      }
+    }
 
-    // Load Razorpay Key from config (in production, this comes from backend)
-    const RAZORPAY_KEY_ID = 'rzp_test_YOUR_KEY_HERE'; // Replace with your test key
+    // Load Razorpay Key from config
+    const RAZORPAY_KEY_ID = 'rzp_test_SYNmgL82IxXJu6';
 
     document.addEventListener('DOMContentLoaded', () => {
+      // Check if user is already logged in and has a redirect
+      const currentUser = JSON.parse(localStorage.getItem('cosmos_user') || 'null');
+      const authToken = localStorage.getItem('cosmos_auth_token');
+      
+      if (currentUser && authToken && redirectUrl && paymentStatus === 'success') {
+        // User just completed payment and login, redirect to original course
+        window.location.href = decodeURIComponent(redirectUrl);
+        return;
+      }
+      
       if (courseId) {
         loadEnrollmentPage(courseId);
       } else {
@@ -574,9 +600,6 @@
 
     // Verify payment and enroll student
     function verifyAndEnroll(paymentResponse, courseId, studentData) {
-      // In production, verify signature on backend
-      // Then enroll student
-
       // Store enrollment locally
       const enrollments = JSON.parse(localStorage.getItem('lms_enrollments') || '[]');
       enrollments.push({
@@ -592,9 +615,25 @@
         enrolled.push(courseId);
         localStorage.setItem('lms_enrolled', JSON.stringify(enrolled));
       }
+      
+      // Store enrolled student data for trainer notifications
+      const enrolledStudents = JSON.parse(localStorage.getItem('lms_enrolled_students') || '[]');
+      enrolledStudents.push({
+        id: 'student_' + Date.now(),
+        name: studentData.name,
+        email: studentData.email,
+        course: courseId,
+        paymentId: paymentResponse.razorpay_payment_id,
+        enrolledAt: new Date().toISOString()
+      });
+      localStorage.setItem('lms_enrolled_students', JSON.stringify(enrolledStudents));
 
-      // Redirect to success page
-      window.location.href = `payment-success.html?course=${courseId}&payment=${paymentResponse.razorpay_payment_id}`;
+      // Redirect to success page with redirect URL if present
+      let successUrl = `payment-success.html?course=${courseId}&payment=${paymentResponse.razorpay_payment_id}&email=${encodeURIComponent(studentData.email)}`;
+      if (returnUrl) {
+        successUrl += `&redirect=${encodeURIComponent(returnUrl)}`;
+      }
+      window.location.href = successUrl;
     }
   </script>
 </body>
