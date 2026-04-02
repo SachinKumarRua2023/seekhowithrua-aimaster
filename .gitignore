@@ -43,3 +43,13 @@ credentials.md
 *.key
 *.pem
 secrets.json
+
+# Internal Planning (DO NOT PUSH)
+Seekhowithrua-discussions/
+*.plan.md
+PLAN_*.md
+Day_*_Session/
+
+# Personal Notes
+*.notes.md
+*.todo.md
