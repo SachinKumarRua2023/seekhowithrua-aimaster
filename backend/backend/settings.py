@@ -16,7 +16,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-9kw!4)@$&am^_*_x=qzl_sv4c@qg@!v9jg39mt32%=r0%lxr$('
+SECRET_KEY = 'django-insecure-9kw!4)@$&am^_*_x=qzl_sv4c@qg@!v9jg39mt32%=r0%lxr$(' 
 
 DEBUG = True
 
@@ -82,15 +82,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'https://django-react-ml-app.vercel.app',
 ]
-# CORS_ALLOWED_ORIGINS = [
-#     'seekhowithrua.com',
-#     'www.seekhowithrua.com',
-#     'api.seekhowithrua.com',
-#     "http://localhost:5173",
-#     "http://localhost:3000",
-#     "http://127.0.0.1:5173",
-#     "https://django-react-ml-app.vercel.app",
-# ]
 
 CORS_ALLOW_HEADERS = [
     'authorization',
@@ -110,7 +101,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-    # Rate limiting — prevents brute force attacks
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
@@ -139,8 +129,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database — Supabase Transaction Pooler (aws-1, IPv4, Render compatible)
-# Updated from aws-0 to aws-1 pooler - 2025-04-06
+# Database
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
@@ -148,7 +137,7 @@ DATABASES = {
         'USER':     'postgres.vhkiwztuyypdtvduapqf',
         'PASSWORD': 'Drunken@1234#4321',
         'HOST':     'aws-1-ap-southeast-2.pooler.supabase.com',
-        'PORT':     '6543',
+        'PORT':     '5432',
         'OPTIONS':  {'sslmode': 'require'},
     }
 }
@@ -179,27 +168,18 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# ── SECURITY SETTINGS ─────────────────────────────────────────────────────────
-# Render handles SSL at proxy level — NEVER set SECURE_SSL_REDIRECT = True
+# Security
 SECURE_SSL_REDIRECT            = False
 SECURE_PROXY_SSL_HEADER        = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-# Cookie security — tied to DEBUG so they work on Render free tier
-# When DEBUG=True  → False (works on Render)
-# When DEBUG=False → True  (production security)
 SESSION_COOKIE_SECURE          = not DEBUG
 CSRF_COOKIE_SECURE             = not DEBUG
 SESSION_COOKIE_HTTPONLY        = True
 CSRF_COOKIE_HTTPONLY           = True
 SESSION_COOKIE_SAMESITE        = 'Lax'
 CSRF_COOKIE_SAMESITE           = 'Lax'
-
-# HSTS — tells browsers to always use HTTPS for 1 year
 SECURE_HSTS_SECONDS            = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD            = True
-
-# Browser security headers
 SECURE_BROWSER_XSS_FILTER      = True
 SECURE_CONTENT_TYPE_NOSNIFF    = True
 X_FRAME_OPTIONS                = 'DENY'
@@ -207,7 +187,7 @@ X_FRAME_OPTIONS                = 'DENY'
 # Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
-# Email Settings for LMS Notifications
+# Email Settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -218,10 +198,10 @@ DEFAULT_FROM_EMAIL = 'noreply@seekhowithrua.com'
 
 # LMS Payment Settings
 LMS_UPI_ID = '8826776018-4@ybl'
-LMS_MONTHLY_FEE = 1000  # Base fee in INR
-LMS_REFERRAL_CONCESSION = 200  # ₹200 per referral
+LMS_MONTHLY_FEE = 1000
+LMS_REFERRAL_CONCESSION = 200
 
-# Media files (for payment screenshots)
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -254,7 +234,6 @@ CELERY_BEAT_SCHEDULE = {
 }
 
 # Google OAuth Configuration
-# Get these from Google Cloud Console: https://console.cloud.google.com/
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
 GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
 GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', 'https://api.seekhowithrua.com/api/auth/google/callback/')
