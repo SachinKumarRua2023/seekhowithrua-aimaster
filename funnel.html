@@ -1169,41 +1169,60 @@
       100% { left: 110%; }
     }
     
-    /* State Transitions */
-    .student-journey .sad { animation: stateChange 8s linear infinite; }
-    .student-journey .happy { animation: stateChange 8s linear infinite reverse; }
+    /* State Transitions - FIXED: Sad fades out, Happy fades in */
+    .student-journey .sad {
+      animation: fadeOut 8s linear infinite;
+    }
+    .student-journey .happy {
+      animation: fadeIn 8s linear infinite;
+      opacity: 0;
+    }
+    
+    /* Staggered delays for each student */
     .s1 .sad, .s1 .happy { animation-delay: 0s; }
     .s2 .sad, .s2 .happy { animation-delay: 2.6s; }
     .s3 .sad, .s3 .happy { animation-delay: 5.3s; }
     
-    @keyframes stateChange {
-      0%, 35% { opacity: 1; }
-      40%, 45% { opacity: 0; }
-      50%, 100% { opacity: 0; }
+    /* Sad emoji: visible at start, fades out at portal (35-45%), stays hidden */
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      35% { opacity: 1; }
+      40% { opacity: 0; }
+      45% { opacity: 0; }
+      100% { opacity: 0; }
     }
     
-    .student-journey .happy {
-      animation-name: stateChangeHappy;
-    }
-    
-    @keyframes stateChangeHappy {
-      0%, 40% { opacity: 0; }
+    /* Happy emoji: hidden at start, fades in after portal (45%), stays visible */
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      40% { opacity: 0; }
       45% { opacity: 1; }
-      50%, 100% { opacity: 1; }
+      100% { opacity: 1; }
     }
     
     /* Tag Transitions */
-    .tag-sad { animation: tagSad 8s linear infinite; }
-    .tag-happy { animation: tagHappy 8s linear infinite; }
+    .tag-sad {
+      animation: tagFadeOut 8s linear infinite;
+    }
+    .tag-happy {
+      animation: tagFadeIn 8s linear infinite;
+    }
+    .s1 .tag-sad, .s1 .tag-happy { animation-delay: 0s; }
+    .s2 .tag-sad, .s2 .tag-happy { animation-delay: 2.6s; }
+    .s3 .tag-sad, .s3 .tag-happy { animation-delay: 5.3s; }
     
-    @keyframes tagSad {
-      0%, 38% { opacity: 1; }
-      42%, 100% { opacity: 0; }
+    @keyframes tagFadeOut {
+      0% { opacity: 1; }
+      38% { opacity: 1; }
+      42% { opacity: 0; }
+      100% { opacity: 0; }
     }
     
-    @keyframes tagHappy {
-      0%, 42% { opacity: 0; }
-      46%, 100% { opacity: 1; }
+    @keyframes tagFadeIn {
+      0% { opacity: 0; }
+      42% { opacity: 0; }
+      46% { opacity: 1; }
+      100% { opacity: 1; }
     }
     
     /* Emoji Fall */
