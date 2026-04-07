@@ -227,6 +227,18 @@
         48% { opacity: 1; }
         100% { opacity: 1; }
       }
+      @keyframes sadState {
+        0% { opacity: 1; }
+        32% { opacity: 1; }
+        40% { opacity: 0; }
+        100% { opacity: 0; }
+      }
+      @keyframes happyState {
+        0% { opacity: 0; }
+        40% { opacity: 0; }
+        48% { opacity: 1; }
+        100% { opacity: 1; }
+      }
       @keyframes emojiFall { to { transform: translateY(500px) rotate(360deg); } }
       @media (max-width: 768px) { 
         section[style*="height: 400px"] { height: 350px !important; }
