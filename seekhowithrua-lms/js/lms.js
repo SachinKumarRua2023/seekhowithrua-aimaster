@@ -34,6 +34,82 @@ function checkMainAppAuth() {
 // Auto-check on load
 checkMainAppAuth();
 
+// ─── PROACTIVE SSO AUTH CHECK ───
+// If not authenticated via URL params, check localStorage or redirect to main app
+function checkSSOAuth() {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  // Skip if already authenticated
+  if (localStorage.getItem('cosmos_auth_token')) {
+    console.log('Already authenticated (localStorage)');
+    updateAuthUI();
+    return;
+  }
+  
+  // Skip if explicitly told not to check (coming from main app link)
+  if (urlParams.get('skip_sso') === '1') {
+    console.log('Skipping SSO check (skip_sso=1)');
+    return;
+  }
+  
+  // Check if we're in an iframe (avoid redirect loops)
+  if (window.self !== window.top) {
+    return;
+  }
+  
+  // Check if we've already tried SSO recently (prevent loops)
+  const lastSSOAttempt = sessionStorage.getItem('last_sso_attempt');
+  const now = Date.now();
+  if (lastSSOAttempt && (now - parseInt(lastSSOAttempt)) < 5000) {
+    return; // Don't retry within 5 seconds
+  }
+  
+  // Mark SSO attempt
+  sessionStorage.setItem('last_sso_attempt', now.toString());
+  
+  // Redirect to main app to check auth status
+  // Main app should verify its own auth and redirect back with token
+  const currentPage = encodeURIComponent(window.location.href);
+  const mainAppAuthUrl = `https://app.seekhowithrua.com/auth/check?redirect=${currentPage}`;
+  
+  console.log('Redirecting to main app for SSO check...');
+  window.location.href = mainAppAuthUrl;
+}
+
+// Check auth status and update UI
+function updateAuthUI() {
+  const token = localStorage.getItem('cosmos_auth_token');
+  const userData = localStorage.getItem('cosmos_user');
+  
+  if (token && userData) {
+    try {
+      const user = JSON.parse(userData);
+      // Update UI to show logged-in state
+      const userSection = document.querySelector('.user-section');
+      if (userSection) {
+        userSection.innerHTML = `
+          <div class="user-info" style="display: flex; align-items: center; gap: 10px;">
+            <span style="color: #fff; font-size: 14px;">👋 ${user.first_name || user.username}</span>
+            <button onclick="logout()" style="background: #ff4757; color: #fff; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 12px;">Logout</button>
+          </div>
+        `;
+      }
+    } catch (e) {
+      console.error('Failed to parse user data:', e);
+    }
+  }
+}
+
+// Logout function
+function logout() {
+  localStorage.removeItem('cosmos_auth_token');
+  localStorage.removeItem('cosmos_user');
+  window.location.reload();
+}
+
+// Run SSO check after a short delay (let page load first)
+setTimeout(checkSSOAuth, 100);
+
 // Course Data - 8 Pre-populated Courses
 const defaultCourses = [
   {
@@ -186,60 +262,6 @@ const defaultCourses = [
       { title: 'HR Interview Questions', duration: '30:00', youtubeUrl: 'https://www.youtube.com/watch?v=1iB3z9n8qYg', module: 'Module 5: HR Round', description: 'Tell me about yourself, strengths, weaknesses' },
       { title: 'Salary Negotiation', duration: '22:00', youtubeUrl: 'https://www.youtube.com/watch?v=uiZ-2E9XL8Q', module: 'Module 6: Offer', description: 'How to negotiate effectively' },
       { title: 'Mock Interview Session', duration: '45:00', youtubeUrl: 'https://www.youtube.com/watch?v=B8QpD-I8E3c', module: 'Module 7: Practice', description: 'Full mock interview with feedback' }
-    ]
-  {
-    id: 'mind-training-memory',
-    title: 'Mind Training & Memory Science',
-    category: 'mind-training',
-    level: 'beginner',
-    description: 'Ground level understanding of mind and memory. Hypnotherapy, NLP, WMSC techniques, and memory championship training.',
-    icon: '🧠',
-    gradient: 'linear-gradient(135deg, #FF6B9D, #8B5CF6)',
-    videos: [
-      { title: 'Introduction to Mind & Memory', duration: '12:00', youtubeUrl: 'https://www.youtube.com/watch?v=example1', module: 'Module 1: Foundations', description: 'Understanding how the mind works and memory basics' },
-      { title: 'Hypnotherapy for Deep Healing', duration: '25:00', youtubeUrl: 'https://www.youtube.com/watch?v=example2', module: 'Module 2: Hypnotherapy', description: 'Learn self-hypnosis and healing techniques' },
-      { title: 'NLP - Neuro Linguistic Programming', duration: '30:00', youtubeUrl: 'https://www.youtube.com/watch?v=example3', module: 'Module 3: NLP', description: 'Reprogram your subconscious mind for success' },
-      { title: 'Quantum Physics & Placebo Effect', duration: '28:00', youtubeUrl: 'https://www.youtube.com/watch?v=example4', module: 'Module 4: Quantum Mind', description: 'How quantum physics explains mind power' },
-      { title: 'Law of Attraction Mastery', duration: '22:00', youtubeUrl: 'https://www.youtube.com/watch?v=example5', module: 'Module 5: Manifestation', description: 'Master the art of attracting what you want' },
-      { title: 'WMSC Memory Techniques', duration: '35:00', youtubeUrl: 'https://www.youtube.com/watch?v=example6', module: 'Module 6: Memory Training', description: 'World Memory Championship techniques' },
-      { title: 'Memory Palace Method', duration: '40:00', youtubeUrl: 'https://www.youtube.com/watch?v=example7', module: 'Module 7: Advanced Memory', description: 'Build your own memory palace for unlimited recall' },
-      { title: '21-Day Memory Transformation', duration: '45:00', youtubeUrl: 'https://www.youtube.com/watch?v=example8', module: 'Module 8: Hackathon', description: 'From 20 words to 200 numbers in 21 days' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-bhagavad-gita',
-    title: 'Essence of Bhagavad Gita',
-    category: 'scriptures',
-    level: 'beginner',
-    description: 'Coming Soon - Deep dive into the timeless wisdom of Bhagavad Gita for modern life application.',
-    icon: '🕉️',
-    gradient: 'linear-gradient(135deg, #FF9500, #FF5500)',
-    videos: [
-      { title: 'Introduction to Gita - Coming Soon', duration: '15:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming1', module: 'Module 1: Introduction', description: 'Overview of Bhagavad Gita and its relevance today' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-ramayana',
-    title: 'Essence of Ramayana',
-    category: 'scriptures',
-    level: 'beginner',
-    description: 'Coming Soon - Life lessons from the epic Ramayana for righteousness and dharma.',
-    icon: '📜',
-    gradient: 'linear-gradient(135deg, #00C853, #64DD17)',
-    videos: [
-      { title: 'Introduction to Ramayana - Coming Soon', duration: '15:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming2', module: 'Module 1: Introduction', description: 'Understanding the epic and its moral teachings' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-vedas',
-    title: 'Essence of Vedas & Upanishads',
-    category: 'scriptures',
-    level: 'intermediate',
-    description: 'Coming Soon - Ancient Vedic wisdom decoded for the modern seeker.',
-    icon: '🔱',
-    gradient: 'linear-gradient(135deg, #00BCD4, #0097A7)',
-    videos: [
-      { title: 'Introduction to Vedas - Coming Soon', duration: '20:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming3', module: 'Module 1: Introduction', description: 'Core concepts of Vedic philosophy' }
     ]
   }
 ];
