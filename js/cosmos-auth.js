@@ -135,17 +135,16 @@ const COSMOS_AUTH = {
     if (this._initialized) return;
     this._initialized = true;
     
-    // Check URL for token from redirect
+    // Check URL for token from redirect (e.g., after login from main app)
     this.checkUrlForToken();
     
     // Verify stored token is still valid
+    // NOTE: Apps handle their own redirect logic - we just verify here
     if (this.isAuthenticated()) {
       const isValid = await this.verifyToken();
       if (!isValid) {
         this.clearAuth();
-        if (!this.isLoginPage()) {
-          this.redirectToLogin();
-        }
+        // Don't auto-redirect - let the app decide
       }
     }
     
@@ -194,12 +193,8 @@ const COSMOS_AUTH = {
   },
 };
 
-// Auto-initialize on page load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => COSMOS_AUTH.init());
-} else {
-  COSMOS_AUTH.init();
-}
+// NOTE: Apps must call COSMOS_AUTH.init() manually after processing URL tokens
+// This prevents race conditions between token processing and auth checks
 
 // Export for use in modules
 if (typeof module !== 'undefined' && module.exports) {
