@@ -1,38 +1,45 @@
 // SeekhoWithRua LMS JavaScript
 
 // ─── CROSS-DOMAIN AUTHENTICATION HANDLER ───
-// Handle login from main app (seekhowithrua.com)
+// Using shared COSMOS_AUTH from cosmos-auth.js
+
 function checkMainAppAuth() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get('token');
-  const userData = urlParams.get('user');
-  
-  if (token && userData) {
-    try {
-      // Parse user data from main app
-      const user = JSON.parse(decodeURIComponent(userData));
-      
-      // Store in localStorage for LMS
-      localStorage.setItem('cosmos_auth_token', token);
-      localStorage.setItem('cosmos_user', JSON.stringify(user));
-      
-      // Clean up URL (remove token and user params)
-      const url = new URL(window.location.href);
-      url.searchParams.delete('token');
-      url.searchParams.delete('user');
-      window.history.replaceState({}, '', url.toString());
-      
-      console.log('Authenticated via main app:', user.email);
-      return true;
-    } catch (e) {
-      console.error('Failed to parse auth data:', e);
-    }
-  }
-  return false;
+  // Use the shared auth library to check for token in URL
+  return COSMOS_AUTH.checkUrlForToken();
 }
 
-// Auto-check on load
-checkMainAppAuth();
+// Check auth status and update UI
+function updateAuthUI() {
+  const token = COSMOS_AUTH.getToken();
+  const user = COSMOS_AUTH.getUser();
+  const userSection = document.querySelector('.user-section');
+  
+  if (!userSection) return;
+  
+  if (token && user) {
+    // Update UI to show logged-in state
+    userSection.innerHTML = `
+      <div class="user-info" style="display: flex; align-items: center; gap: 10px;">
+        <span style="color: #fff; font-size: 14px;">👋 ${user.first_name || user.username}</span>
+        <button onclick="logout()" style="background: #ff4757; color: #fff; border: none; padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 12px;">Logout</button>
+      </div>
+    `;
+  } else {
+    // Not logged in - show login button that links to main app
+    const currentUrl = encodeURIComponent(window.location.href);
+    userSection.innerHTML = `
+      <a href="https://app.seekhowithrua.com/login?redirect=${currentUrl}" 
+         style="background: linear-gradient(135deg, #7c3aed, #00d4ff); color: #fff; padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: 600;">
+        🔐 Login
+      </a>
+    `;
+  }
+}
+
+// Logout function - use shared library
+function logout() {
+  COSMOS_AUTH.logout();
+}
 
 // Course Data - 8 Pre-populated Courses
 const defaultCourses = [
@@ -186,60 +193,6 @@ const defaultCourses = [
       { title: 'HR Interview Questions', duration: '30:00', youtubeUrl: 'https://www.youtube.com/watch?v=1iB3z9n8qYg', module: 'Module 5: HR Round', description: 'Tell me about yourself, strengths, weaknesses' },
       { title: 'Salary Negotiation', duration: '22:00', youtubeUrl: 'https://www.youtube.com/watch?v=uiZ-2E9XL8Q', module: 'Module 6: Offer', description: 'How to negotiate effectively' },
       { title: 'Mock Interview Session', duration: '45:00', youtubeUrl: 'https://www.youtube.com/watch?v=B8QpD-I8E3c', module: 'Module 7: Practice', description: 'Full mock interview with feedback' }
-    ]
-  {
-    id: 'mind-training-memory',
-    title: 'Mind Training & Memory Science',
-    category: 'mind-training',
-    level: 'beginner',
-    description: 'Ground level understanding of mind and memory. Hypnotherapy, NLP, WMSC techniques, and memory championship training.',
-    icon: '🧠',
-    gradient: 'linear-gradient(135deg, #FF6B9D, #8B5CF6)',
-    videos: [
-      { title: 'Introduction to Mind & Memory', duration: '12:00', youtubeUrl: 'https://www.youtube.com/watch?v=example1', module: 'Module 1: Foundations', description: 'Understanding how the mind works and memory basics' },
-      { title: 'Hypnotherapy for Deep Healing', duration: '25:00', youtubeUrl: 'https://www.youtube.com/watch?v=example2', module: 'Module 2: Hypnotherapy', description: 'Learn self-hypnosis and healing techniques' },
-      { title: 'NLP - Neuro Linguistic Programming', duration: '30:00', youtubeUrl: 'https://www.youtube.com/watch?v=example3', module: 'Module 3: NLP', description: 'Reprogram your subconscious mind for success' },
-      { title: 'Quantum Physics & Placebo Effect', duration: '28:00', youtubeUrl: 'https://www.youtube.com/watch?v=example4', module: 'Module 4: Quantum Mind', description: 'How quantum physics explains mind power' },
-      { title: 'Law of Attraction Mastery', duration: '22:00', youtubeUrl: 'https://www.youtube.com/watch?v=example5', module: 'Module 5: Manifestation', description: 'Master the art of attracting what you want' },
-      { title: 'WMSC Memory Techniques', duration: '35:00', youtubeUrl: 'https://www.youtube.com/watch?v=example6', module: 'Module 6: Memory Training', description: 'World Memory Championship techniques' },
-      { title: 'Memory Palace Method', duration: '40:00', youtubeUrl: 'https://www.youtube.com/watch?v=example7', module: 'Module 7: Advanced Memory', description: 'Build your own memory palace for unlimited recall' },
-      { title: '21-Day Memory Transformation', duration: '45:00', youtubeUrl: 'https://www.youtube.com/watch?v=example8', module: 'Module 8: Hackathon', description: 'From 20 words to 200 numbers in 21 days' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-bhagavad-gita',
-    title: 'Essence of Bhagavad Gita',
-    category: 'scriptures',
-    level: 'beginner',
-    description: 'Coming Soon - Deep dive into the timeless wisdom of Bhagavad Gita for modern life application.',
-    icon: '🕉️',
-    gradient: 'linear-gradient(135deg, #FF9500, #FF5500)',
-    videos: [
-      { title: 'Introduction to Gita - Coming Soon', duration: '15:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming1', module: 'Module 1: Introduction', description: 'Overview of Bhagavad Gita and its relevance today' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-ramayana',
-    title: 'Essence of Ramayana',
-    category: 'scriptures',
-    level: 'beginner',
-    description: 'Coming Soon - Life lessons from the epic Ramayana for righteousness and dharma.',
-    icon: '📜',
-    gradient: 'linear-gradient(135deg, #00C853, #64DD17)',
-    videos: [
-      { title: 'Introduction to Ramayana - Coming Soon', duration: '15:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming2', module: 'Module 1: Introduction', description: 'Understanding the epic and its moral teachings' }
-    ]
-  },
-  {
-    id: 'scriptures-essence-vedas',
-    title: 'Essence of Vedas & Upanishads',
-    category: 'scriptures',
-    level: 'intermediate',
-    description: 'Coming Soon - Ancient Vedic wisdom decoded for the modern seeker.',
-    icon: '🔱',
-    gradient: 'linear-gradient(135deg, #00BCD4, #0097A7)',
-    videos: [
-      { title: 'Introduction to Vedas - Coming Soon', duration: '20:00', youtubeUrl: 'https://www.youtube.com/watch?v=coming3', module: 'Module 1: Introduction', description: 'Core concepts of Vedic philosophy' }
     ]
   }
 ];
@@ -419,16 +372,43 @@ function renderCourseGrid() {
 }
 
 // Event Listeners
+// Mobile Menu Toggle
+function toggleMobileMenu() {
+  const nav = document.getElementById('mainNav');
+  const toggle = document.getElementById('mobileMenuToggle');
+  if (nav && toggle) {
+    nav.classList.toggle('active');
+    toggle.classList.toggle('active');
+  }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', (e) => {
+  const nav = document.getElementById('mainNav');
+  const toggle = document.getElementById('mobileMenuToggle');
+  if (nav && toggle && !nav.contains(e.target) && !toggle.contains(e.target)) {
+    nav.classList.remove('active');
+    toggle.classList.remove('active');
+  }
+});
+
 function initIndexPage() {
   createParticles();
   updateOverallProgress();
   renderCourseGrid();
 
-  // Filter buttons
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  // Filter buttons - completely isolate each button click
+  document.querySelectorAll('.filter-btn').forEach((btn, index, allBtns) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      
+      // Remove active from ALL buttons first
+      allBtns.forEach(b => b.classList.remove('active'));
+      // Add active to clicked button only
       btn.classList.add('active');
+      // Re-render grid
       renderCourseGrid();
     });
   });

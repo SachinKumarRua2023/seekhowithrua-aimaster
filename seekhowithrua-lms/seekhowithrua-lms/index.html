@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SeekhoWithRua LMS - Learn with YouTube Courses | Free Online Learning Platform</title>
+  <meta name="description" content="Free LMS with YouTube-integrated courses. Learn Data Science, Python, Web Development, AI/ML with progress tracking. Trainers can upload unlisted YouTube videos.">
+  <meta name="keywords" content="LMS, online learning, YouTube courses, free courses, data science, python, web development, AI ML learning">
+  <meta name="author" content="SeekhoWithRua">
+  <meta property="og:title" content="SeekhoWithRua LMS - Free YouTube-Integrated Learning">
+  <meta property="og:description" content="Learn with curated YouTube courses. Track progress. Free for students.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lms.seekhowithrua.com">
+  <link rel="canonical" href="https://lms.seekhowithrua.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/lms.css">
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">SeekhoWith<span>Rua LMS</span></div>
+    <nav>
+      <a href="index.html">Courses</a>
+      <a href="my-learning.html">My Learning</a>
+      <a href="trainer-dashboard.html">Trainer Portal</a>
+      <a href="https://app.seekhowithrua.com" target="_blank">Live Rooms</a>
+    </nav>
+    <div class="user-section">
+      <div class="progress-summary" id="progressSummary">
+        <span class="progress-icon">📚</span>
+        <span id="overallProgress">0% Complete</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Learn with <span class="gradient-text">YouTube Courses</span></h1>
+      <p class="hero-subtitle">Curated learning paths with YouTube videos. Track your progress. Learn at your own pace.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number" id="totalCourses">8</span>
+          <span class="stat-label">Courses</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" id="totalVideos">150+</span>
+          <span class="stat-label">Videos</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number" id="activeLearners">5K+</span>
+          <span class="stat-label">Learners</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <a href="#courses" class="btn-primary">Explore Courses</a>
+        <a href="trainer-dashboard.html" class="btn-secondary">I'm a Trainer</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="floating-card card-1">
+        <div class="card-icon">🐍</div>
+        <span>Python</span>
+      </div>
+      <div class="floating-card card-2">
+        <div class="card-icon">📊</div>
+        <span>Data Science</span>
+      </div>
+      <div class="floating-card card-3">
+        <div class="card-icon">🤖</div>
+        <span>AI & ML</span>
+      </div>
+      <div class="floating-card card-4">
+        <div class="card-icon">💻</div>
+        <span>Web Dev</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter -->
+  <section class="search-section">
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search courses..." class="search-input">
+      <div class="filter-tags">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="python">Python</button>
+        <button class="filter-btn" data-filter="data-science">Data Science</button>
+        <button class="filter-btn" data-filter="web-dev">Web Dev</button>
+        <button class="filter-btn" data-filter="ai-ml">AI/ML</button>
+        <button class="filter-btn" data-filter="mobile">Mobile</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Grid -->
+  <section class="courses-section" id="courses">
+    <h2 class="section-title">Featured Courses</h2>
+    <div class="course-grid" id="courseGrid"></div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-icon">📚</div>
+        <h3>Choose a Course</h3>
+        <p>Browse curated learning paths across Data Science, Python, Web Development, and more.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-icon">▶️</div>
+        <h3>Watch & Learn</h3>
+        <p>Learn from carefully selected YouTube videos embedded directly in the platform.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-icon">✅</div>
+        <h3>Track Progress</h3>
+        <p>Mark videos as complete. Track your learning journey with visual progress indicators.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-icon">🏆</div>
+        <h3>Get Certified</h3>
+        <p>Complete courses and earn certificates to showcase your skills.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- For Trainers -->
+  <section class="trainers-section">
+    <div class="trainers-content">
+      <h2>Are You a Trainer?</h2>
+      <p>Upload your YouTube videos and create structured courses. Reach thousands of learners.</p>
+      <ul class="trainer-benefits">
+        <li>✓ Upload unlisted YouTube videos</li>
+        <li>✓ Organize videos into chapters</li>
+        <li>✓ Track student engagement</li>
+        <li>✓ Monetize through our platform</li>
+      </ul>
+      <a href="trainer-dashboard.html" class="btn-primary">Start Teaching</a>
+    </div>
+    <div class="trainers-visual">
+      <div class="dashboard-preview">
+        <div class="preview-header">Trainer Dashboard</div>
+        <div class="preview-stats">
+          <div class="preview-stat">
+            <span class="preview-value">1,247</span>
+            <span class="preview-label">Students</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-value">89%</span>
+            <span class="preview-label">Completion</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo">SeekhoWith<span>Rua</span></div>
+        <p>Making quality education accessible through AI and community.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Learn</h4>
+          <a href="index.html">All Courses</a>
+          <a href="my-learning.html">My Learning</a>
+          <a href="#">Certificates</a>
+        </div>
+        <div class="footer-column">
+          <h4>Teach</h4>
+          <a href="trainer-dashboard.html">Trainer Portal</a>
+          <a href="#">Create Course</a>
+          <a href="#">Guidelines</a>
+        </div>
+        <div class="footer-column">
+          <h4>🔥 Special Offer</h4>
+          <a href="funnel.html" style="color: #7c3aed; font-weight: 600;">AI + Full Stack Bundle — ₹8,999</a>
+          <a href="funnel.html">6 Tracks + Internship</a>
+          <a href="funnel.html">Limited Seats</a>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="https://seekhowithrua.com">Main Site</a>
+          <a href="https://app.seekhowithrua.com">Live Rooms</a>
+          <a href="https://gaming.seekhowithrua.com">Gaming Lab</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 SeekhoWithRua. Built by Master Rua.</p>
+    </div>
+  </footer>
+
+  <script src="js/lms.js"></script>
+</body>
+</html>

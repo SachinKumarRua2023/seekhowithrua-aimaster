@@ -140,6 +140,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database — Supabase Transaction Pooler (aws-1, IPv4, Render compatible)
+# Updated from aws-0 to aws-1 pooler - 2025-04-06
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
@@ -251,3 +252,9 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': 'crontab(hour="20", minute="0")',
     },
 }
+
+# Google OAuth Configuration
+# Get these from Google Cloud Console: https://console.cloud.google.com/
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', '')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', '')
+GOOGLE_REDIRECT_URI = os.environ.get('GOOGLE_REDIRECT_URI', 'https://api.seekhowithrua.com/api/auth/google/callback/')
