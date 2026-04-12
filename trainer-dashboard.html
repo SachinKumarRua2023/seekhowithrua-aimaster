@@ -21,11 +21,17 @@
     <div class="logo">SeekhoWith<span>Rua LMS</span></div>
     <nav>
       <a href="index.html">Courses</a>
-      <a href="quiz.html">Quiz</a>
+      <a href="seekhowithrua-quizes/index.html">📝 Quizzes</a>
       <a href="my-learning.html">My Learning</a>
       <a href="trainer-dashboard.html" class="active">Trainer Portal</a>
       <a href="https://app.seekhowithrua.com" target="_blank">Live Rooms</a>
+      <a href="seekhowithrua-gaming/index.html" style="color: #00ff88;">🎮 Gaming</a>
+      <a href="seekhowithrua-animation/index.html" style="color: #f39c12;">✨ Animation</a>
+      <a href="seekhowithrua-aiAgentBuilder/index.html" style="color: #9b59b6;">🤖 AI Agent</a>
+      <a href="seekhowithrua-websiteBuilder/index.html" style="color: #3498db;">🌐 Web Builder</a>
+      <a href="seekhowithrua-appBuilder/index.html" style="color: #e74c3c;">📱 App Builder</a>
     </nav>
+    <div class="user-section" id="userSection"></div>
   </header>
 
   <main class="trainer-dashboard">
@@ -528,6 +534,25 @@
       return true;
     }
 
+    // Update user section in header
+    function updateUserUI() {
+      const section = document.getElementById('userSection');
+      if (!section) return;
+      const user = COSMOS_AUTH.getUser();
+      const token = COSMOS_AUTH.getToken();
+      if (token && user) {
+        const name = user.first_name || user.username || user.email?.split('@')[0] || 'Trainer';
+        section.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="color:#00d4ff;font-size:14px;font-weight:600;">👋 ${name}</span>
+            <button onclick="COSMOS_AUTH.logout()"
+              style="background:#ff4757;color:#fff;border:none;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;">
+              Logout
+            </button>
+          </div>`;
+      }
+    }
+
     let currentEditingCourse = null;
     let tempVideos = [];
 
@@ -535,6 +560,7 @@
       // Small delay to ensure COSMOS_AUTH has processed URL tokens
       setTimeout(() => {
         if (checkTrainerAuth()) {
+          updateUserUI();
           loadTrainerStats();
           loadTrainerCourses();
           document.getElementById('createCourseForm').addEventListener('submit', handleCreateCourse);

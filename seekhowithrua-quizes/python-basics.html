@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Basics Quiz | SeekhoWithRua Quizzes</title>
+  <script src="../js/cosmos-auth.js"></script>
+  <script src="js/auth.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2a 100%);
+      color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh;
+    }
+    header {
+      position: relative; z-index: 10; padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(124,58,237,0.2);
+      background: rgba(10,10,26,0.8); backdrop-filter: blur(10px);
+    }
+    .logo { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700;
+      background: linear-gradient(135deg,#7c3aed,#00d4ff); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text; }
+    nav a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 25px;
+      font-size: 14px; font-weight: 500; transition: color 0.3s; }
+    nav a:hover { color: #7c3aed; }
+    .user-section { display: flex; align-items: center; gap: 15px; }
+    
+    main { max-width: 800px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 5; }
+    
+    .quiz-container { background: rgba(255,255,255,0.05); border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 20px; padding: 40px; }
+    .quiz-header { text-align: center; margin-bottom: 40px; }
+    .quiz-header h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; margin-bottom: 10px; }
+    .quiz-meta { display: flex; justify-content: center; gap: 20px; color: rgba(255,255,255,0.6);
+      font-size: 14px; }
+    .progress-bar { height: 6px; background: rgba(124,58,237,0.2); border-radius: 3px;
+      margin-bottom: 30px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(135deg,#7c3aed,#00d4ff);
+      transition: width 0.3s; border-radius: 3px; }
+    
+    .question { margin-bottom: 30px; }
+    .question-number { font-size: 12px; color: #7c3aed; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .question-text { font-size: 18px; font-weight: 500; margin-bottom: 20px; line-height: 1.5; }
+    
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option { background: rgba(255,255,255,0.05); border: 2px solid rgba(124,58,237,0.2);
+      border-radius: 12px; padding: 15px 20px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 15px; }
+    .option:hover { border-color: #7c3aed; background: rgba(124,58,237,0.1); }
+    .option.selected { border-color: #7c3aed; background: rgba(124,58,237,0.2); }
+    .option.correct { border-color: #00ff88; background: rgba(0,255,136,0.2); }
+    .option.wrong { border-color: #ff4757; background: rgba(255,71,87,0.2); }
+    .option-marker { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .option.selected .option-marker { border-color: #7c3aed; background: #7c3aed; }
+    .option.correct .option-marker { border-color: #00ff88; background: #00ff88; color: #000; }
+    .option.wrong .option-marker { border-color: #ff4757; background: #ff4757; }
+    
+    .quiz-nav { display: flex; justify-content: space-between; margin-top: 30px; }
+    .btn { padding: 12px 30px; border-radius: 25px; border: none; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .btn-primary { background: linear-gradient(135deg,#7c3aed,#00d4ff); color: #fff; }
+    .btn-secondary { background: rgba(124,58,237,0.1); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(124,58,237,0.3); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .results { text-align: center; padding: 40px; }
+    .score-circle { width: 150px; height: 150px; border-radius: 50%;
+      background: linear-gradient(135deg,#7c3aed,#00d4ff); display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 30px; }
+    .score-value { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; }
+    .score-label { font-size: 14px; opacity: 0.9; }
+    .result-message { font-size: 24px; font-weight: 600; margin-bottom: 20px; }
+    .result-details { color: rgba(255,255,255,0.7); margin-bottom: 30px; }
+    
+    .review-section { margin-top: 30px; text-align: left; }
+    .review-item { background: rgba(255,255,255,0.05); border-radius: 12px;
+      padding: 20px; margin-bottom: 15px; }
+    .review-status { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+    .review-status.correct { color: #00ff88; }
+    .review-status.wrong { color: #ff4757; }
+    
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 15px; padding: 15px 20px; }
+      nav a { margin: 0 10px; }
+      main { padding: 20px; }
+      .quiz-container { padding: 25px; }
+      .quiz-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">SeekhoWith<span>Rua</span></div>
+    <nav>
+      <a href="index.html">← Back to Quizzes</a>
+      <a href="../index.html">🏠 LMS Home</a>
+    </nav>
+    <div class="user-section" id="userSection"></div>
+  </header>
+
+  <main>
+    <div class="quiz-container" id="quizContainer">
+      <!-- Quiz content will be rendered here -->
+    </div>
+  </main>
+
+  <script>
+    const quizConfig = {
+      id: 'python-basics',
+      title: 'Python Basics Quiz',
+      category: 'python',
+      icon: '🐍',
+      difficulty: 'easy',
+      passingScore: 70,
+      
+      questions: [
+        {
+          question: "What is the output of print(2 + 3)?",
+          options: ["23", "5", "2 + 3", "Error"],
+          correct: 1,
+          explanation: "2 + 3 = 5, so the output is 5."
+        },
+        {
+          question: "Which of the following is a valid variable name in Python?",
+          options: ["2name", "my-name", "my_name", "my name"],
+          correct: 2,
+          explanation: "Variable names can contain letters, numbers, and underscores, but cannot start with a number or contain spaces/hyphens."
+        },
+        {
+          question: "What data type is the value 3.14?",
+          options: ["int", "float", "str", "bool"],
+          correct: 1,
+          explanation: "3.14 has a decimal point, making it a float (floating-point number)."
+        },
+        {
+          question: "How do you create a single-line comment in Python?",
+          options: ["// This is a comment", "/* This is a comment */", "# This is a comment", "-- This is a comment"],
+          correct: 2,
+          explanation: "In Python, single-line comments start with the # character."
+        },
+        {
+          question: "What function is used to get user input in Python?",
+          options: ["scanf()", "input()", "read()", "get()"],
+          correct: 1,
+          explanation: "The input() function is used to get user input from the keyboard."
+        },
+        {
+          question: "What is the result of type(5)?",
+          options: ["<class 'int'>", "<class 'float'>", "<class 'str'>", "<class 'number'>"],
+          correct: 0,
+          explanation: "5 is an integer, so type(5) returns <class 'int'>."
+        },
+        {
+          question: "Which operator is used for exponentiation in Python?",
+          options: ["^", "**", "//", "%%"],
+          correct: 1,
+          explanation: "The ** operator is used for exponentiation. For example, 2**3 = 8."
+        },
+        {
+          question: "What is the output of print('Hello' + 'World')?",
+          options: ["Hello World", "HelloWorld", "Hello+World", "Error"],
+          correct: 1,
+          explanation: "String concatenation joins strings together without spaces. 'Hello' + 'World' = 'HelloWorld'."
+        },
+        {
+          question: "How do you convert a string '10' to an integer?",
+          options: ["int('10')", "str(10)", "convert('10')", "toInt('10')"],
+          correct: 0,
+          explanation: "The int() function converts a string to an integer."
+        },
+        {
+          question: "What does len('Python') return?",
+          options: ["5", "6", "7", "Error"],
+          correct: 1,
+          explanation: "'Python' has 6 characters, so len('Python') returns 6."
+        },
+        {
+          question: "Which of the following is a mutable data type?",
+          options: ["str", "int", "list", "tuple"],
+          correct: 2,
+          explanation: "Lists are mutable (can be changed after creation), while strings, integers, and tuples are immutable."
+        },
+        {
+          question: "What is the output of print(10 // 3)?",
+          options: ["3.33", "3", "4", "1"],
+          correct: 1,
+          explanation: "// is the floor division operator. 10 // 3 = 3 (integer division)."
+        },
+        {
+          question: "How do you create an empty list?",
+          options: ["[]", "list()", "Both A and B", "None of these"],
+          correct: 2,
+          explanation: "Both [] and list() create an empty list in Python."
+        },
+        {
+          question: "What is the correct way to write an if statement?",
+          options: ["if x > 5:", "if (x > 5)", "if x > 5 then:", "if x > 5;"],
+          correct: 0,
+          explanation: "Python if statements end with a colon (:) and use indentation."
+        },
+        {
+          question: "What does range(5) produce?",
+          options: ["[0, 1, 2, 3, 4, 5]", "[1, 2, 3, 4, 5]", "[0, 1, 2, 3, 4]", "0 1 2 3 4"],
+          correct: 2,
+          explanation: "range(5) generates numbers from 0 to 4 (5 is exclusive)."
+        },
+        {
+          question: "How do you access the last element of a list my_list?",
+          options: ["my_list[last]", "my_list[-1]", "my_list[0]", "my_list.end()"],
+          correct: 1,
+          explanation: "Negative indexing starts from the end. my_list[-1] gets the last element."
+        },
+        {
+          question: "What is the output of bool('False')?",
+          options: ["False", "True", "Error", "None"],
+          correct: 1,
+          explanation: "Non-empty strings are truthy in Python, so bool('False') returns True."
+        },
+        {
+          question: "Which method adds an element to the end of a list?",
+          options: ["add()", "append()", "insert()", "extend()"],
+          correct: 1,
+          explanation: "The append() method adds a single element to the end of a list."
+        },
+        {
+          question: "What does import math do?",
+          options: ["Installs math module", "Imports the math module", "Creates a math module", "Deletes math module"],
+          correct: 1,
+          explanation: "import math imports the math module so you can use its functions."
+        },
+        {
+          question: "What is the output of print(2 == 2.0)?",
+          options: ["False", "True", "Error", "None"],
+          correct: 1,
+          explanation: "== checks for value equality. 2 and 2.0 have the same value, so it returns True."
+        }
+      ]
+    };
+    
+    let currentQuestion = 0;
+    let answers = [];
+    let quizSubmitted = false;
+    
+    function initQuiz() {
+      if (!quizAuth.checkAuth()) {
+        document.getElementById('quizContainer').innerHTML = `
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:64px;margin-bottom:20px;">🔒</div>
+            <h2 style="font-family:'Orbitron',sans-serif;margin-bottom:15px;">Login Required</h2>
+            <p style="color:rgba(255,255,255,0.7);margin-bottom:30px;">Please login to take this quiz.</p>
+            <a href="https://app.seekhowithrua.com/login?redirect=${encodeURIComponent(window.location.href)}"
+               style="background:linear-gradient(135deg,#7c3aed,#00d4ff);color:#fff;
+                      padding:14px 40px;border-radius:30px;text-decoration:none;
+                      font-weight:700;display:inline-block;">Login to Start</a>
+          </div>
+        `;
+        return;
+      }
+      
+      const previousResult = quizAuth.getQuizResult(quizConfig.id);
+      if (previousResult) {
+        showResults(previousResult);
+        return;
+      }
+      
+      renderQuestion();
+    }
+    
+    function renderQuestion() {
+      const q = quizConfig.questions[currentQuestion];
+      const progress = ((currentQuestion + 1) / quizConfig.questions.length) * 100;
+      
+      let optionsHtml = q.options.map((opt, idx) => `
+        <div class="option ${answers[currentQuestion] === idx ? 'selected' : ''}" 
+             onclick="selectOption(${idx})" data-idx="${idx}">
+          <div class="option-marker">${String.fromCharCode(65 + idx)}</div>
+          <div>${opt}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('quizContainer').innerHTML = `
+        <div class="quiz-header">
+          <h1>${quizConfig.icon} ${quizConfig.title}</h1>
+          <div class="quiz-meta">
+            <span>Question ${currentQuestion + 1} of ${quizConfig.questions.length}</span>
+            <span>•</span>
+            <span>${quizConfig.category.replace('-', ' ').toUpperCase()}</span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+        <div class="question">
+          <div class="question-number">Question ${currentQuestion + 1}</div>
+          <div class="question-text">${q.question}</div>
+          <div class="options">${optionsHtml}</div>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn btn-secondary" onclick="prevQuestion()" 
+                  ${currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+          <button class="btn btn-primary" onclick="nextQuestion()">
+            ${currentQuestion === quizConfig.questions.length - 1 ? 'Submit Quiz ✓' : 'Next →'}
+          </button>
+        </div>
+      `;
+    }
+    
+    function selectOption(idx) {
+      if (quizSubmitted) return;
+      answers[currentQuestion] = idx;
+      document.querySelectorAll('.option').forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+      });
+    }
+    
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+    
+    function nextQuestion() {
+      if (answers[currentQuestion] === undefined) {
+        alert('Please select an answer');
+        return;
+      }
+      
+      if (currentQuestion < quizConfig.questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        submitQuiz();
+      }
+    }
+    
+    function submitQuiz() {
+      quizSubmitted = true;
+      let score = 0;
+      const detailedAnswers = [];
+      
+      quizConfig.questions.forEach((q, idx) => {
+        const isCorrect = answers[idx] === q.correct;
+        if (isCorrect) score++;
+        detailedAnswers.push({
+          question: q.question,
+          selected: q.options[answers[idx]],
+          correct: q.options[q.correct],
+          isCorrect,
+          explanation: q.explanation
+        });
+      });
+      
+      const result = quizAuth.saveQuizResult(quizConfig.id, score, quizConfig.questions.length, detailedAnswers);
+      showResults(result);
+    }
+    
+    function showResults(result) {
+      const percentage = result.percentage;
+      const passed = percentage >= quizConfig.passingScore;
+      
+      let message, color;
+      if (percentage >= 90) { message = '🏆 Excellent!'; color = '#00ff88'; }
+      else if (percentage >= 70) { message = '✅ Good Job!'; color = '#00d4ff'; }
+      else if (percentage >= 50) { message = '💪 Keep Practicing!'; color = '#f39c12'; }
+      else { message = '📚 Review the Material'; color = '#ff4757'; }
+      
+      let reviewHtml = result.answers.map((ans, idx) => `
+        <div class="review-item">
+          <div class="review-status ${ans.isCorrect ? 'correct' : 'wrong'}">
+            ${ans.isCorrect ? '✓ Correct' : '✗ Wrong'} - Question ${idx + 1}
+          </div>
+          <div style="font-weight:500;margin-bottom:8px;">${ans.question}</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.7);">
+            Your answer: ${ans.selected} ${ans.isCorrect ? '✓' : `(Correct: ${ans.correct})`}
+          </div>
+          ${!ans.isCorrect ? `<div style="font-size:13px;color:#f39c12;margin-top:8px;">💡 ${ans.explanation}</div>` : ''}
+        </div>
+      `).join('');
+      
+      document.getElementById('quizContainer').innerHTML = `
+        <div class="results">
+          <div class="score-circle" style="background: ${passed ? 'linear-gradient(135deg,#00ff88,#00d4ff)' : 'linear-gradient(135deg,#ff4757,#ff6b7a)'};">
+            <div class="score-value">${percentage}%</div>
+            <div class="score-label">${result.score}/${result.total}</div>
+          </div>
+          <div class="result-message" style="color: ${color};">${message}</div>
+          <div class="result-details">
+            You scored ${result.score} out of ${result.total} questions correctly.<br>
+            ${passed ? `🎉 You passed! (${quizConfig.passingScore}% required)` : `📚 You need ${quizConfig.passingScore}% to pass.`}
+          </div>
+          <div style="display:flex;gap:15px;justify-content:center;">
+            <a href="index.html" class="btn btn-primary">Back to Quizzes</a>
+            <a href="${quizConfig.id}.html" class="btn btn-secondary" onclick="location.reload();return false;">Retake Quiz</a>
+          </div>
+          
+          <div class="review-section">
+            <h3 style="font-family:'Orbitron',sans-serif;margin-bottom:20px;">Review Answers</h3>
+            ${reviewHtml}
+          </div>
+        </div>
+      `;
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      quizAuth.updateAuthUI();
+      initQuiz();
+    });
+  </script>
+</body>
+</html>

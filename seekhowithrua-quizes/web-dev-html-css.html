@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML & CSS Quiz | SeekhoWithRua Quizzes</title>
+  <script src="../js/cosmos-auth.js"></script>
+  <script src="js/auth.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d0d2a 100%);
+      color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh;
+    }
+    header {
+      position: relative; z-index: 10; padding: 20px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(124,58,237,0.2);
+      background: rgba(10,10,26,0.8); backdrop-filter: blur(10px);
+    }
+    .logo { font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 700;
+      background: linear-gradient(135deg,#7c3aed,#00d4ff); -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent; background-clip: text; }
+    nav a { color: rgba(255,255,255,0.7); text-decoration: none; margin-left: 25px;
+      font-size: 14px; font-weight: 500; transition: color 0.3s; }
+    nav a:hover { color: #7c3aed; }
+    .user-section { display: flex; align-items: center; gap: 15px; }
+    
+    main { max-width: 800px; margin: 0 auto; padding: 40px 20px; position: relative; z-index: 5; }
+    
+    .quiz-container { background: rgba(255,255,255,0.05); border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 20px; padding: 40px; }
+    .quiz-header { text-align: center; margin-bottom: 40px; }
+    .quiz-header h1 { font-family: 'Orbitron', sans-serif; font-size: 28px; margin-bottom: 10px; }
+    .quiz-meta { display: flex; justify-content: center; gap: 20px; color: rgba(255,255,255,0.6);
+      font-size: 14px; }
+    .progress-bar { height: 6px; background: rgba(124,58,237,0.2); border-radius: 3px;
+      margin-bottom: 30px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(135deg,#7c3aed,#00d4ff);
+      transition: width 0.3s; border-radius: 3px; }
+    
+    .question { margin-bottom: 30px; }
+    .question-number { font-size: 12px; color: #7c3aed; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .question-text { font-size: 18px; font-weight: 500; margin-bottom: 20px; line-height: 1.5; }
+    
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option { background: rgba(255,255,255,0.05); border: 2px solid rgba(124,58,237,0.2);
+      border-radius: 12px; padding: 15px 20px; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 15px; }
+    .option:hover { border-color: #7c3aed; background: rgba(124,58,237,0.1); }
+    .option.selected { border-color: #7c3aed; background: rgba(124,58,237,0.2); }
+    .option.correct { border-color: #00ff88; background: rgba(0,255,136,0.2); }
+    .option.wrong { border-color: #ff4757; background: rgba(255,71,87,0.2); }
+    .option-marker { width: 24px; height: 24px; border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .option.selected .option-marker { border-color: #7c3aed; background: #7c3aed; }
+    .option.correct .option-marker { border-color: #00ff88; background: #00ff88; color: #000; }
+    .option.wrong .option-marker { border-color: #ff4757; background: #ff4757; }
+    
+    .quiz-nav { display: flex; justify-content: space-between; margin-top: 30px; }
+    .btn { padding: 12px 30px; border-radius: 25px; border: none; font-size: 14px;
+      font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+    .btn-primary { background: linear-gradient(135deg,#7c3aed,#00d4ff); color: #fff; }
+    .btn-secondary { background: rgba(124,58,237,0.1); color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(124,58,237,0.3); }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    
+    .results { text-align: center; padding: 40px; }
+    .score-circle { width: 150px; height: 150px; border-radius: 50%;
+      background: linear-gradient(135deg,#7c3aed,#00d4ff); display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto 30px; }
+    .score-value { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; }
+    .score-label { font-size: 14px; opacity: 0.9; }
+    .result-message { font-size: 24px; font-weight: 600; margin-bottom: 20px; }
+    .result-details { color: rgba(255,255,255,0.7); margin-bottom: 30px; }
+    
+    .review-section { margin-top: 30px; text-align: left; }
+    .review-item { background: rgba(255,255,255,0.05); border-radius: 12px;
+      padding: 20px; margin-bottom: 15px; }
+    .review-status { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+    .review-status.correct { color: #00ff88; }
+    .review-status.wrong { color: #ff4757; }
+    
+    code { background: rgba(124,58,237,0.2); padding: 2px 8px; border-radius: 4px;
+      font-family: 'Fira Code', monospace; font-size: 14px; }
+    pre code { display: block; padding: 15px; margin: 10px 0; overflow-x: auto; }
+    
+    @media (max-width: 768px) {
+      header { flex-direction: column; gap: 15px; padding: 15px 20px; }
+      nav a { margin: 0 10px; }
+      main { padding: 20px; }
+      .quiz-container { padding: 25px; }
+      .quiz-header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">SeekhoWith<span>Rua</span></div>
+    <nav>
+      <a href="index.html">← Back to Quizzes</a>
+      <a href="../index.html">🏠 LMS Home</a>
+    </nav>
+    <div class="user-section" id="userSection"></div>
+  </header>
+
+  <main>
+    <div class="quiz-container" id="quizContainer"></div>
+  </main>
+
+  <script>
+    const quizConfig = {
+      id: 'web-dev-html-css',
+      title: 'HTML & CSS Mastery',
+      category: 'web-dev',
+      icon: '💻',
+      difficulty: 'easy',
+      passingScore: 70,
+      
+      questions: [
+        {
+          question: "What does HTML stand for?",
+          options: ["Hyper Text Markup Language", "High Tech Modern Language", "Hyper Transfer Markup Language", "Home Tool Markup Language"],
+          correct: 0,
+          explanation: "HTML stands for HyperText Markup Language, the standard markup language for documents designed to be displayed in a web browser."
+        },
+        {
+          question: "Which tag is used to create a hyperlink in HTML?",
+          options: ["<link>", "<a>", "<href>", "<url>"],
+          correct: 1,
+          explanation: "The <a> (anchor) tag is used to create hyperlinks. The href attribute specifies the URL."
+        },
+        {
+          question: "What is the correct CSS syntax to change the text color to red?",
+          options: ["text-color: red;", "color: red;", "font-color: red;", "text: red;"],
+          correct: 1,
+          explanation: "The CSS property 'color' is used to set the text color. Example: color: red;"
+        },
+        {
+          question: "Which HTML tag is used to include an external CSS file?",
+          options: ["<style>", "<css>", "<link>", "<script>"],
+          correct: 2,
+          explanation: "The <link> tag with rel='stylesheet' is used to link external CSS files."
+        },
+        {
+          question: "What does the <div> tag represent?",
+          options: ["A hyperlink", "A division or section", "An image", "A paragraph"],
+          correct: 1,
+          explanation: "The <div> tag defines a division or a section in an HTML document, used as a container."
+        },
+        {
+          question: "Which CSS property controls the space inside an element's border?",
+          options: ["margin", "padding", "border-spacing", "spacing"],
+          correct: 1,
+          explanation: "Padding controls the space inside an element's border, while margin controls space outside."
+        },
+        {
+          question: "What is the default display property of a <span> element?",
+          options: ["block", "inline", "inline-block", "none"],
+          correct: 1,
+          explanation: "<span> is an inline element by default, meaning it doesn't start on a new line."
+        },
+        {
+          question: "Which selector targets an element with id='header'?",
+          options: [".header", "#header", "header", "*header"],
+          correct: 1,
+          explanation: "The # symbol is used to select an element by its ID in CSS."
+        },
+        {
+          question: "What is the correct HTML tag for inserting a line break?",
+          options: ["<lb>", "<break>", "<br>", "<newline>"],
+          correct: 2,
+          explanation: "The <br> tag inserts a single line break (it's a self-closing tag)."
+        },
+        {
+          question: "Which CSS property makes text bold?",
+          options: ["text-weight: bold;", "font-bold: true;", "font-weight: bold;", "text-style: bold;"],
+          correct: 2,
+          explanation: "font-weight: bold; is the correct CSS property to make text bold."
+        },
+        {
+          question: "What does CSS stand for?",
+          options: ["Computer Style Sheets", "Creative Style System", "Cascading Style Sheets", "Colorful Style Sheets"],
+          correct: 2,
+          explanation: "CSS stands for Cascading Style Sheets, used for styling HTML elements."
+        },
+        {
+          question: "Which HTML attribute specifies alternative text for an image?",
+          options: ["title", "alt", "src", "description"],
+          correct: 1,
+          explanation: "The 'alt' attribute provides alternative text for an image if it cannot be displayed."
+        },
+        {
+          question: "How do you center a block element horizontally in CSS?",
+          options: ["align: center;", "text-align: center;", "margin: 0 auto;", "position: center;"],
+          correct: 2,
+          explanation: "margin: 0 auto; centers a block-level element horizontally within its container."
+        },
+        {
+          question: "Which tag creates the largest heading in HTML?",
+          options: ["<h6>", "<head>", "<h1>", "<heading>"],
+          correct: 2,
+          explanation: "<h1> defines the most important/largest heading, while <h6> is the smallest."
+        },
+        {
+          question: "What is the correct way to comment in CSS?",
+          options: ["// This is a comment", "/* This is a comment */", "<!-- This is a comment -->", "# This is a comment"],
+          correct: 1,
+          explanation: "CSS uses /* */ for comments. // is for JavaScript, <!-- --> is for HTML."
+        },
+        {
+          question: "Which property changes the background color?",
+          options: ["bgcolor", "background-color", "color-background", "background"],
+          correct: 1,
+          explanation: "background-color sets the background color of an element."
+        },
+        {
+          question: "What is the correct HTML for creating a checkbox?",
+          options: ["<input type='check'>", "<checkbox>", "<input type='checkbox'>", "<check>"],
+          correct: 2,
+          explanation: "<input type='checkbox'> creates a checkbox input field."
+        },
+        {
+          question: "Which CSS property controls text size?",
+          options: ["text-size", "font-size", "size", "text-style"],
+          correct: 1,
+          explanation: "font-size controls the size of the font/text."
+        },
+        {
+          question: "What does the 'z-index' property control?",
+          options: ["Horizontal position", "Vertical position", "Stack order", "Zoom level"],
+          correct: 2,
+          explanation: "z-index controls the stack order of positioned elements (which element appears on top)."
+        },
+        {
+          question: "Which HTML5 tag is used to define navigation links?",
+          options: ["<nav>", "<navigation>", "<menu>", "<links>"],
+          correct: 0,
+          explanation: "The <nav> tag defines a set of navigation links, introduced in HTML5."
+        },
+        {
+          question: "What is the purpose of the 'display: flex' property?",
+          options: ["Hide the element", "Make element inline", "Enable Flexbox layout", "Make element transparent"],
+          correct: 2,
+          explanation: "display: flex enables Flexbox layout mode, making it easier to design flexible responsive layouts."
+        },
+        {
+          question: "Which attribute is required in an <img> tag?",
+          options: ["alt", "title", "src", "width"],
+          correct: 2,
+          explanation: "The src attribute is required and specifies the path to the image."
+        },
+        {
+          question: "How do you select all <p> elements inside a <div> with class 'content'?",
+          options: ["div.content p", "div p.content", ".content p", "div > p"],
+          correct: 0,
+          explanation: "div.content p selects all <p> elements inside a <div> with class 'content'."
+        },
+        {
+          question: "What is the box model in CSS?",
+          options: ["A 3D effect", "A layout comprising content, padding, border, and margin", "A JavaScript framework", "A type of display"],
+          correct: 1,
+          explanation: "The CSS box model consists of: content (inner), padding, border, and margin (outer)."
+        },
+        {
+          question: "Which pseudo-class selects the first child element?",
+          options: [":first", ":first-child", ":child(1)", ":nth-first"],
+          correct: 1,
+          explanation: ":first-child pseudo-class matches the first child element of its parent."
+        }
+      ]
+    };
+    
+    let currentQuestion = 0;
+    let answers = [];
+    let quizSubmitted = false;
+    
+    function initQuiz() {
+      if (!quizAuth.checkAuth()) {
+        document.getElementById('quizContainer').innerHTML = `
+          <div style="text-align:center;padding:60px 20px;">
+            <div style="font-size:64px;margin-bottom:20px;">🔒</div>
+            <h2 style="font-family:'Orbitron',sans-serif;margin-bottom:15px;">Login Required</h2>
+            <p style="color:rgba(255,255,255,0.7);margin-bottom:30px;">Please login to take this quiz.</p>
+            <a href="https://app.seekhowithrua.com/login?redirect=${encodeURIComponent(window.location.href)}"
+               style="background:linear-gradient(135deg,#7c3aed,#00d4ff);color:#fff;
+                      padding:14px 40px;border-radius:30px;text-decoration:none;
+                      font-weight:700;display:inline-block;">Login to Start</a>
+          </div>
+        `;
+        return;
+      }
+      
+      const previousResult = quizAuth.getQuizResult(quizConfig.id);
+      if (previousResult) {
+        showResults(previousResult);
+        return;
+      }
+      
+      renderQuestion();
+    }
+    
+    function renderQuestion() {
+      const q = quizConfig.questions[currentQuestion];
+      const progress = ((currentQuestion + 1) / quizConfig.questions.length) * 100;
+      
+      let optionsHtml = q.options.map((opt, idx) => `
+        <div class="option ${answers[currentQuestion] === idx ? 'selected' : ''}" 
+             onclick="selectOption(${idx})" data-idx="${idx}">
+          <div class="option-marker">${String.fromCharCode(65 + idx)}</div>
+          <div>${opt}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('quizContainer').innerHTML = `
+        <div class="quiz-header">
+          <h1>${quizConfig.icon} ${quizConfig.title}</h1>
+          <div class="quiz-meta">
+            <span>Question ${currentQuestion + 1} of ${quizConfig.questions.length}</span>
+            <span>•</span>
+            <span>${quizConfig.category.replace('-', ' ').toUpperCase()}</span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+        <div class="question">
+          <div class="question-number">Question ${currentQuestion + 1}</div>
+          <div class="question-text">${q.question}</div>
+          <div class="options">${optionsHtml}</div>
+        </div>
+        <div class="quiz-nav">
+          <button class="btn btn-secondary" onclick="prevQuestion()" 
+                  ${currentQuestion === 0 ? 'disabled' : ''}>← Previous</button>
+          <button class="btn btn-primary" onclick="nextQuestion()">
+            ${currentQuestion === quizConfig.questions.length - 1 ? 'Submit Quiz ✓' : 'Next →'}
+          </button>
+        </div>
+      `;
+    }
+    
+    function selectOption(idx) {
+      if (quizSubmitted) return;
+      answers[currentQuestion] = idx;
+      document.querySelectorAll('.option').forEach((el, i) => {
+        el.classList.toggle('selected', i === idx);
+      });
+    }
+    
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+    
+    function nextQuestion() {
+      if (answers[currentQuestion] === undefined) {
+        alert('Please select an answer');
+        return;
+      }
+      
+      if (currentQuestion < quizConfig.questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        submitQuiz();
+      }
+    }
+    
+    function submitQuiz() {
+      quizSubmitted = true;
+      let score = 0;
+      const detailedAnswers = [];
+      
+      quizConfig.questions.forEach((q, idx) => {
+        const isCorrect = answers[idx] === q.correct;
+        if (isCorrect) score++;
+        detailedAnswers.push({
+          question: q.question,
+          selected: q.options[answers[idx]],
+          correct: q.options[q.correct],
+          isCorrect,
+          explanation: q.explanation
+        });
+      });
+      
+      const result = quizAuth.saveQuizResult(quizConfig.id, score, quizConfig.questions.length, detailedAnswers);
+      showResults(result);
+    }
+    
+    function showResults(result) {
+      const percentage = result.percentage;
+      const passed = percentage >= quizConfig.passingScore;
+      
+      let message, color;
+      if (percentage >= 90) { message = '🏆 Excellent!'; color = '#00ff88'; }
+      else if (percentage >= 70) { message = '✅ Good Job!'; color = '#00d4ff'; }
+      else if (percentage >= 50) { message = '💪 Keep Practicing!'; color = '#f39c12'; }
+      else { message = '📚 Review the Material'; color = '#ff4757'; }
+      
+      let reviewHtml = result.answers.map((ans, idx) => `
+        <div class="review-item">
+          <div class="review-status ${ans.isCorrect ? 'correct' : 'wrong'}">
+            ${ans.isCorrect ? '✓ Correct' : '✗ Wrong'} - Question ${idx + 1}
+          </div>
+          <div style="font-weight:500;margin-bottom:8px;">${ans.question}</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.7);">
+            Your answer: ${ans.selected} ${ans.isCorrect ? '✓' : `(Correct: ${ans.correct})`}
+          </div>
+          ${!ans.isCorrect ? `<div style="font-size:13px;color:#f39c12;margin-top:8px;">💡 ${ans.explanation}</div>` : ''}
+        </div>
+      `).join('');
+      
+      document.getElementById('quizContainer').innerHTML = `
+        <div class="results">
+          <div class="score-circle" style="background: ${passed ? 'linear-gradient(135deg,#00ff88,#00d4ff)' : 'linear-gradient(135deg,#ff4757,#ff6b7a)'};">
+            <div class="score-value">${percentage}%</div>
+            <div class="score-label">${result.score}/${result.total}</div>
+          </div>
+          <div class="result-message" style="color: ${color};">${message}</div>
+          <div class="result-details">
+            You scored ${result.score} out of ${result.total} questions correctly.<br>
+            ${passed ? `🎉 You passed! (${quizConfig.passingScore}% required)` : `📚 You need ${quizConfig.passingScore}% to pass.`}
+          </div>
+          <div style="display:flex;gap:15px;justify-content:center;">
+            <a href="index.html" class="btn btn-primary">Back to Quizzes</a>
+            <a href="${quizConfig.id}.html" class="btn btn-secondary" onclick="location.reload();return false;">Retake Quiz</a>
+          </div>
+          
+          <div class="review-section">
+            <h3 style="font-family:'Orbitron',sans-serif;margin-bottom:20px;">Review Answers</h3>
+            ${reviewHtml}
+          </div>
+        </div>
+      `;
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      quizAuth.updateAuthUI();
+      initQuiz();
+    });
+  </script>
+</body>
+</html>
