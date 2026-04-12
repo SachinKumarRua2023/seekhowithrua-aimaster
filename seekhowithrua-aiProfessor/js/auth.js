@@ -5,9 +5,9 @@
 
 const aiProfessorAuth = {
   // Check if user is authenticated
-  checkAuth: function() {
+  isAuthenticated: function() {
     if (typeof COSMOS_AUTH !== 'undefined') {
-      return COSMOS_AUTH.checkAuth();
+      return COSMOS_AUTH.isAuthenticated();
     }
     
     // Fallback: check localStorage directly

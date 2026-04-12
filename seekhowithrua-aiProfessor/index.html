@@ -674,7 +674,7 @@ let isTyping = false;
 // Check authentication on load
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
-    if (typeof aiProfessorAuth !== 'undefined' && !aiProfessorAuth.checkAuth()) {
+    if (typeof aiProfessorAuth !== 'undefined' && !aiProfessorAuth.isAuthenticated()) {
       showLoginModal();
     } else {
       loadUserUI();
@@ -700,11 +700,11 @@ function redirectToLogin() {
 }
 
 function loadUserUI() {
-  const userInfo = aiProfessorAuth?.getUserInfo();
+  const userInfo = (typeof aiProfessorAuth !== 'undefined') ? aiProfessorAuth.getUserInfo() : null;
   if (userInfo) {
     document.getElementById('userSection').innerHTML = `
       <span style="color: var(--text-secondary); font-size: 13px;">${userInfo.name || userInfo.email}</span>
-      <button onclick="aiProfessorAuth.logout()" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Logout</button>
+      <button onclick="if(typeof aiProfessorAuth !== 'undefined') aiProfessorAuth.logout()" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">Logout</button>
     `;
   }
 }
@@ -757,7 +757,7 @@ async function sendMessage() {
   if (!message || isTyping) return;
 
   // Check auth
-  if (typeof aiProfessorAuth !== 'undefined' && !aiProfessorAuth.checkAuth()) {
+  if (typeof aiProfessorAuth !== 'undefined' && !aiProfessorAuth.isAuthenticated()) {
     showLoginModal();
     return;
   }
