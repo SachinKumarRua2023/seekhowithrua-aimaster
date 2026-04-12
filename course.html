@@ -76,11 +76,15 @@
   <script src="js/cosmos-auth.js"></script>
   <script src="js/lms.js"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="js/cosmos-auth.js"></script>
 
   <script>
   // ══════════════════════════════════════════════════════════════
   //  COURSE PLAYER AUTH + PLAYBACK LOGIC
   // ══════════════════════════════════════════════════════════════
+
+  // Initialize COSMOS auth first
+  COSMOS_AUTH.init();
 
   // ── 1. Auth Check ──────────────────────────────────────────────
   // cosmos-auth.js already called checkUrlForToken() in its init,
