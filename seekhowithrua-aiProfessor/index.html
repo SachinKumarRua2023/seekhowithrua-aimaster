@@ -662,10 +662,10 @@
 </div>
 
 <script>
-// API Configuration
+// API Configuration - Vercel Serverless Function
 const API_BASE_URL = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000' 
-  : 'https://ai-professor-api.onrender.com'; // Change to your deployed backend URL
+  ? 'http://localhost:3000/api' 
+  : '/api'; // Same domain for Vercel deployment
 
 let currentSubject = 'general';
 let chatHistory = [];
