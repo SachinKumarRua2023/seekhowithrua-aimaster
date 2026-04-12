@@ -1920,3 +1920,114 @@ footer {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* Floating AI Professor Widget */
+.ai-professor-float {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.ai-professor-float:hover {
+  transform: scale(1.05);
+}
+
+.ai-professor-orbit {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
+  animation: aiOrbit 3s ease-in-out infinite;
+  position: relative;
+}
+
+.ai-professor-orbit::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #00d4ff;
+  border-right-color: #00d4ff;
+  animation: aiSpin 2s linear infinite;
+}
+
+.ai-professor-orbit::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  animation: aiPulse 2s ease-in-out infinite;
+}
+
+@keyframes aiOrbit {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes aiSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes aiPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.5; }
+}
+
+.ai-professor-icon {
+  font-size: 28px;
+  z-index: 1;
+}
+
+.ai-professor-text {
+  background: rgba(124, 58, 237, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 12px 20px;
+  border-radius: 30px;
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ai-professor-text span {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+  .ai-professor-float {
+    bottom: 20px;
+    right: 20px;
+  }
+  
+  .ai-professor-orbit {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .ai-professor-icon {
+    font-size: 24px;
+  }
+  
+  .ai-professor-text {
+    display: none;
+  }
+}
