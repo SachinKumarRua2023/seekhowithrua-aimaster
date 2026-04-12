@@ -17,10 +17,15 @@ const aiProfessorAuth = {
     return !!(token && userInfo);
   },
 
+  // Alias for backwards compatibility
+  checkAuth: function() {
+    return this.isAuthenticated();
+  },
+
   // Get user information
   getUserInfo: function() {
     if (typeof COSMOS_AUTH !== 'undefined') {
-      return COSMOS_AUTH.getUserInfo();
+      return COSMOS_AUTH.getUser ? COSMOS_AUTH.getUser() : null;
     }
     
     // Fallback: parse from localStorage
@@ -82,7 +87,7 @@ const aiProfessorAuth = {
     const userSection = document.getElementById('userSection');
     if (!userSection) return;
 
-    if (this.checkAuth()) {
+    if (this.isAuthenticated()) {
       const userInfo = this.getUserInfo();
       if (userInfo) {
         userSection.innerHTML = `
