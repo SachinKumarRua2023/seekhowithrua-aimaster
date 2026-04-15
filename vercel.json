@@ -2,10 +2,6 @@
   "version": 2,
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/index.py"
-    },
-    {
       "src": "/aiMaster",
       "dest": "/seekhowithrua-lms/aiMaster/index.html"
     },

@@ -11,6 +11,8 @@
     <!-- Highlight.js for code syntax -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <!-- Google Generative AI -->
+    <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.8.0/dist/index.min.js"></script>
     <style>
         :root {
             --bg-deep:    #0d0f1a;
@@ -638,7 +640,35 @@
 
 <script>
 // ── CONFIG ──
-const API_URL = window.location.origin + '/api/chat';
+const GEMMA_API_KEY = 'AIzaSyDLoPaH86c7QD0UFozSOVL5877uuLkbP6g';
+
+// Initialize Google AI
+const genAI = new GoogleGenerativeAI(GEMMA_API_KEY);
+const model = genAI.getGenerativeModel({
+    model: "gemma-4-31b-it",
+    generationConfig: {
+        temperature: 0.7,
+        topP: 0.95,
+        maxOutputTokens: 2048
+    }
+});
+
+// ── SYSTEM PROMPT ──
+const SYSTEM_PROMPT = `You are AI Master — an expert coding tutor and AI teacher for SeekhoWithRua.
+
+CORE RULES:
+1. NEVER show internal reasoning or drafts
+2. Respond ONLY with final polished answers
+3. Use Markdown: headers, code blocks, bullets, bold
+4. Always include working code examples with language tags
+5. Be concise but thorough
+
+EXPERTISE: Python, JavaScript, React, Node.js, ML, Data Science, SQL, DevOps, Git, APIs
+
+TEACHING STYLE:
+- Explain concepts → show code → explain the code
+- Use analogies for beginners
+- Adapt to student mood/experience level`;
 
 // ── STATE ──
 let conversationHistory = [];
@@ -772,31 +802,51 @@ async function sendMessage() {
     document.getElementById('sendBtn').disabled = true;
 
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                messages: conversationHistory,
-                emotion: emotion
-            })
+        // Build conversation for Gemini
+        let chatHistory = [];
+        
+        // Add system prompt as first user message (Gemma doesn't have system role)
+        chatHistory.push({
+            role: 'user',
+            parts: [{ text: SYSTEM_PROMPT + '\n\nEmotion context: Student is feeling ' + emotion + '. Adapt your teaching style accordingly.\n\nNow respond to: ' + message }]
         });
-
-        const data = await res.json();
-        removeTyping(typingId);
-
-        if (data.success) {
-            const reply = data.response;
-            conversationHistory.push({ role: 'assistant', content: reply });
-            appendMessage(reply, 'ai', emotion);
-            updateProgress(reply);
-            topicCount++;
-            document.getElementById('topicCount').textContent = topicCount;
-        } else {
-            appendMessage('❌ Something went wrong. Please try again.', 'ai');
+        
+        // Add conversation history
+        for (let i = 0; i < conversationHistory.length - 1; i++) {
+            const msg = conversationHistory[i];
+            chatHistory.push({
+                role: msg.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: msg.content }]
+            });
         }
+        
+        // Create chat session
+        const chat = model.startChat({
+            history: chatHistory,
+            generationConfig: {
+                temperature: 0.7,
+                topP: 0.95,
+                maxOutputTokens: 2048
+            }
+        });
+        
+        // Send message and get response
+        const result = await chat.sendMessage(message);
+        const response = await result.response;
+        const reply = response.text();
+        
+        removeTyping(typingId);
+        
+        conversationHistory.push({ role: 'assistant', content: reply });
+        appendMessage(reply, 'ai', emotion);
+        updateProgress(reply);
+        topicCount++;
+        document.getElementById('topicCount').textContent = topicCount;
+        
     } catch (err) {
         removeTyping(typingId);
-        appendMessage('⚠️ Connection error. Check your network and try again.', 'ai');
+        console.error('AI Error:', err);
+        appendMessage('⚠️ Error: ' + (err.message || 'Failed to get response. Please try again.'), 'ai');
     } finally {
         setStatus('● Ready', '#4ade80');
         isStreaming = false;
