@@ -1,7 +1,22 @@
 {
   "version": 2,
   "routes": [
-    { "src": "/(.*)", "dest": "/$1" }
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/aiMaster",
+      "dest": "/seekhowithrua-lms/aiMaster/index.html"
+    },
+    {
+      "src": "/aiMaster/(.*)",
+      "dest": "/seekhowithrua-lms/aiMaster/index.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/seekhowithrua-lms/$1"
+    }
   ],
   "cleanUrls": false,
   "trailingSlash": false
