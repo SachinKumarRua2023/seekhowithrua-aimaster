@@ -70,11 +70,7 @@
     "extra": {
       "router": {
         "origin": false
-      },
-      "eas": {
-        "projectId": "seekhowithrua-mobile"
       }
-    },
-    "owner": "seekhowithrua"
+    }
   }
 }
