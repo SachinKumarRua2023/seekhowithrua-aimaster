@@ -1,5 +1,5 @@
 // mobile/src/navigation/MainTabs.tsx
-// SIMPLIFIED: Only 2 features - Courses + VCR/AI
+// SIMPLIFIED: Only 3 features - Courses, Live (VCR+AI), Profile
 
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -7,16 +7,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, FONTS, SPACING } from "../constants/theme";
 
-// Pages - Only 2 main features
+// Pages - Only 3 main features
 import Courses from "../pages/Courses";
 import VCRoom from "../pages/VCRoom";
 import TalkWithRua from "../pages/TalkWithRua";
+import Profile from "../pages/Profile";
 import { useAuthStore } from "../store/authStore";
 
 // ─── Tab param list ────────────────────────────────────────────────────────
 export type MainTabParamList = {
-  Courses: undefined;      // All courses from website
-  Live: undefined;         // VCR + AI combined
+  Home: undefined;      // Courses
+  Live: undefined;      // VCR + AI combined
+  Profile: undefined;   // Student profile
 };
 
 export type LiveStackParamList = {
@@ -100,7 +102,7 @@ function LiveStackNavigator() {
 export default function MainTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Courses"
+      initialRouteName="Home"
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
@@ -108,10 +110,10 @@ export default function MainTabs() {
       }}
     >
       <Tab.Screen
-        name="Courses"
+        name="Home"
         component={Courses}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon label="Courses" emoji="📚" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon label="Home" emoji="📚" focused={focused} />,
         }}
       />
       <Tab.Screen
@@ -119,6 +121,13 @@ export default function MainTabs() {
         component={LiveStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => <TabIcon label="Live" emoji="🎙️" focused={focused} />,
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => <TabIcon label="Profile" emoji="👤" focused={focused} />,
         }}
       />
     </Tab.Navigator>
