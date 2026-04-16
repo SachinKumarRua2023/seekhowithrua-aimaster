@@ -84,7 +84,7 @@ export default function Courses() {
   const handleEnroll = async (courseId: number) => {
     if (!user) {
       Alert.alert("Login Required", "Please login to enroll in courses.");
-      navigation.navigate("Login");
+      navigation.navigate("Auth");
       return;
     }
 
@@ -184,9 +184,8 @@ export default function Courses() {
   };
 
   const renderMyCourseCard = ({ item }: { item: EnrolledCourse }) => (
-    <TouchableOpacity
+    <View
       style={styles.myCourseCard}
-      onPress={() => navigation.navigate("CourseDetail", { courseId: item.id })}
     >
       <Text style={styles.courseIconLarge}>{getCategoryIcon(item.category)}</Text>
       <View style={styles.myCourseInfo}>
@@ -197,7 +196,7 @@ export default function Courses() {
         </Text>
       </View>
       <Text style={styles.arrowIcon}>→</Text>
-    </TouchableOpacity>
+    </View>
   );
 
   if (loading) {
