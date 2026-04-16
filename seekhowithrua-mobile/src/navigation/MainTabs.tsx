@@ -1,6 +1,5 @@
 // mobile/src/navigation/MainTabs.tsx
-// Replaces: <Navbar> component + web URL routing
-// Maps every route from your App.jsx to a tab or stack screen
+// SIMPLIFIED: Only 2 features - Courses + VCR/AI
 
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -8,42 +7,26 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS, FONTS, SPACING } from "../constants/theme";
 
-// Pages — all routes from your App.jsx
-import MasterRua from "../pages/MasterRua";
-import VCRoom from "../pages/VCRoom";
-import MLPredictor from "../pages/MLPredictor";
-import SyllabusPage from "../pages/SyllabusPage";
-import TrainerDashboard from "../pages/TrainerDashboard";
-import Employees from "../pages/Employees";
-import MnemonicSystem from "../pages/MnemonicSystem";
-import TalkWithRua from "../pages/TalkWithRua";
-import Profile from "../pages/Profile";
+// Pages - Only 2 main features
 import Courses from "../pages/Courses";
-import StudentDashboard from "../pages/StudentDashboard";
+import VCRoom from "../pages/VCRoom";
+import TalkWithRua from "../pages/TalkWithRua";
 import { useAuthStore } from "../store/authStore";
 
 // ─── Tab param list ────────────────────────────────────────────────────────
 export type MainTabParamList = {
-  Home: undefined;        // → /  (MasterRua)
-  LiveVoice: undefined;   // → /live-voice (VCRoom) — was your default redirect after login
-  TalkRua: undefined;     // → /talk-with-rua
-  More: undefined;        // → stack for ML, Syllabus, Employees, etc.
+  Courses: undefined;      // All courses from website
+  Live: undefined;         // VCR + AI combined
 };
 
-export type MoreStackParamList = {
-  MoreMenu: undefined;
-  ML: undefined;
-  Syllabus: undefined;
-  Employees: undefined;
-  Trainer: undefined;
-  Mnemonic: undefined;
-  Profile: undefined;
-  Courses: undefined;
-  StudentDashboard: undefined;
+export type LiveStackParamList = {
+  LiveMenu: undefined;
+  VCRoom: undefined;
+  TalkWithRua: undefined;
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
-const MoreStack = createNativeStackNavigator<MoreStackParamList>();
+const LiveStack = createNativeStackNavigator<LiveStackParamList>();
 
 // ─── Tab Icon Component ────────────────────────────────────────────────────
 function TabIcon({ label, emoji, focused }: { label: string; emoji: string; focused: boolean }) {
@@ -55,38 +38,40 @@ function TabIcon({ label, emoji, focused }: { label: string; emoji: string; focu
   );
 }
 
-// ─── More Menu Screen ──────────────────────────────────────────────────────
-// Groups: /ml, /syllabus, /employees, /trainer-kpi, /mnemonic-system, /profile
-function MoreMenuScreen({ navigation }: any) {
+// ─── Live Menu Screen ──────────────────────────────────────────────────────
+// VCR + AI combined menu
+function LiveMenuScreen({ navigation }: any) {
   const { logout } = useAuthStore();
 
-  const items = [
-    { label: "My Learning",       emoji: "🎓", screen: "StudentDashboard" },
-    { label: "Courses",           emoji: "📖", screen: "Courses" },
-    { label: "ML Predictor",      emoji: "🤖", screen: "ML" },
-    { label: "Syllabus",          emoji: "📚", screen: "Syllabus" },
-    { label: "Employees",         emoji: "👥", screen: "Employees" },
-    { label: "Trainer KPI",       emoji: "📊", screen: "Trainer" },
-    { label: "Mnemonic System",   emoji: "🧠", screen: "Mnemonic" },
-    { label: "Profile",           emoji: "👤", screen: "Profile" },
-  ];
-
   return (
-    <View style={styles.moreContainer}>
-      <Text style={styles.moreTitle}>More</Text>
-      {items.map((item) => (
-        <TouchableOpacity
-          key={item.screen}
-          style={styles.moreItem}
-          onPress={() => navigation.navigate(item.screen)}
-        >
-          <Text style={styles.moreEmoji}>{item.emoji}</Text>
-          <Text style={styles.moreLabel}>{item.label}</Text>
-          <Text style={styles.moreArrow}>›</Text>
-        </TouchableOpacity>
-      ))}
+    <View style={styles.liveContainer}>
+      <Text style={styles.liveTitle}>Live Features</Text>
+      
+      <TouchableOpacity
+        style={styles.liveItem}
+        onPress={() => navigation.navigate("VCRoom")}
+      >
+        <Text style={styles.liveEmoji}>🎙️</Text>
+        <View style={styles.liveTextContainer}>
+          <Text style={styles.liveLabel}>Voice Chat Rooms</Text>
+          <Text style={styles.liveDesc}>Join live voice discussions</Text>
+        </View>
+        <Text style={styles.liveArrow}>›</Text>
+      </TouchableOpacity>
 
-      {/* Logout — replaces your Navbar logout button */}
+      <TouchableOpacity
+        style={styles.liveItem}
+        onPress={() => navigation.navigate("TalkWithRua")}
+      >
+        <Text style={styles.liveEmoji}>🤖</Text>
+        <View style={styles.liveTextContainer}>
+          <Text style={styles.liveLabel}>Talk with AI (Rua)</Text>
+          <Text style={styles.liveDesc}>Chat with AI assistant</Text>
+        </View>
+        <Text style={styles.liveArrow}>›</Text>
+      </TouchableOpacity>
+
+      {/* Logout */}
       <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
         <Text style={styles.logoutText}>🚪 Logout</Text>
       </TouchableOpacity>
@@ -94,26 +79,20 @@ function MoreMenuScreen({ navigation }: any) {
   );
 }
 
-// ─── More Stack ────────────────────────────────────────────────────────────
-function MoreStackNavigator() {
+// ─── Live Stack ────────────────────────────────────────────────────────────
+function LiveStackNavigator() {
   return (
-    <MoreStack.Navigator
+    <LiveStack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: COLORS.surface },
         headerTintColor: COLORS.textPrimary,
         headerTitleStyle: { fontWeight: "bold" },
       }}
     >
-      <MoreStack.Screen name="MoreMenu"   component={MoreMenuScreen}   options={{ title: "More" }} />
-      <MoreStack.Screen name="ML"         component={MLPredictor}       options={{ title: "ML Predictor 🤖" }} />
-      <MoreStack.Screen name="Syllabus"   component={SyllabusPage}      options={{ title: "Syllabus 📚" }} />
-      <MoreStack.Screen name="Employees"  component={Employees}         options={{ title: "Employees 👥" }} />
-      <MoreStack.Screen name="Trainer"    component={TrainerDashboard}  options={{ title: "Trainer KPI 📊" }} />
-      <MoreStack.Screen name="Mnemonic"   component={MnemonicSystem}    options={{ title: "Mnemonic 🧠" }} />
-      <MoreStack.Screen name="Profile"    component={Profile}           options={{ title: "Profile 👤" }} />
-      <MoreStack.Screen name="Courses"    component={Courses}           options={{ title: "Courses 📖" }} />
-      <MoreStack.Screen name="StudentDashboard" component={StudentDashboard} options={{ title: "My Learning 🎓" }} />
-    </MoreStack.Navigator>
+      <LiveStack.Screen name="LiveMenu" component={LiveMenuScreen} options={{ title: "Live Features" }} />
+      <LiveStack.Screen name="VCRoom" component={VCRoom} options={{ title: "Voice Rooms 🎙️" }} />
+      <LiveStack.Screen name="TalkWithRua" component={TalkWithRua} options={{ title: "AI Chat 🤖" }} />
+    </LiveStack.Navigator>
   );
 }
 
@@ -121,7 +100,7 @@ function MoreStackNavigator() {
 export default function MainTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="LiveVoice"  // → same as your redirect to /live-voice after login
+      initialRouteName="Courses"
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
@@ -129,31 +108,17 @@ export default function MainTabs() {
       }}
     >
       <Tab.Screen
-        name="Home"
-        component={MasterRua}
+        name="Courses"
+        component={Courses}
         options={{
-          tabBarIcon: ({ focused }) => <TabIcon label="Home" emoji="🏠" focused={focused} />,
+          tabBarIcon: ({ focused }) => <TabIcon label="Courses" emoji="📚" focused={focused} />,
         }}
       />
       <Tab.Screen
-        name="LiveVoice"
-        component={VCRoom}
+        name="Live"
+        component={LiveStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => <TabIcon label="Live" emoji="🎙️" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="TalkRua"
-        component={TalkWithRua}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon label="Rua" emoji="🤖" focused={focused} />,
-        }}
-      />
-      <Tab.Screen
-        name="More"
-        component={MoreStackNavigator}
-        options={{
-          tabBarIcon: ({ focused }) => <TabIcon label="More" emoji="☰" focused={focused} />,
         }}
       />
     </Tab.Navigator>
@@ -191,7 +156,49 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-  // More Menu
+  // Live Menu
+  liveContainer: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    paddingTop: 60,
+    paddingHorizontal: SPACING.lg,
+  },
+  liveTitle: {
+    fontSize: FONTS.sizes.xxl,
+    color: COLORS.textPrimary,
+    fontWeight: "bold",
+    marginBottom: SPACING.xl,
+  },
+  liveItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: SPACING.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  liveEmoji: {
+    fontSize: 28,
+    marginRight: SPACING.md,
+  },
+  liveTextContainer: {
+    flex: 1,
+  },
+  liveLabel: {
+    fontSize: FONTS.sizes.lg,
+    color: COLORS.textPrimary,
+    fontWeight: "bold",
+  },
+  liveDesc: {
+    fontSize: FONTS.sizes.sm,
+    color: COLORS.textMuted,
+    marginTop: 4,
+  },
+  liveArrow: {
+    fontSize: 22,
+    color: COLORS.textMuted,
+  },
+
+  // More Menu (keep for compatibility)
   moreContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
