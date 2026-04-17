@@ -156,12 +156,14 @@ export default function LoginScreen() {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      // Demo: mock success
+      // Demo: mock success - match User interface
       await setAuth('mock_token_' + Date.now(), {
-        id: Date.now().toString(),
-        name,
-        [method]: contact,
-      });
+        id: Date.now(),
+        username: name.toLowerCase().replace(/\s+/g, '_'),
+        email: method === 'email' ? contact : `${contact}@mobile.user`,
+        first_name: name.split(' ')[0] || name,
+        last_name: name.split(' ').slice(1).join(' ') || '',
+      } as any);
     } finally {
       setLoading(false);
     }
