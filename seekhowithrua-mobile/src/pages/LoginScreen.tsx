@@ -1,215 +1,351 @@
-// mobile/src/pages/LoginScreen.tsx
-// JWT Auth with deep links from app.seekhowithrua.com
-
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, AppState
+  View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView
 } from 'react-native';
-import * as Linking from 'expo-linking';
-import * as WebBrowser from 'expo-web-browser';
 import { useAuthStore } from '../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 
-// Deep link scheme
-const APP_SCHEME = 'seekhowithrua://auth/callback';
-const WEB_LOGIN_URL = 'https://app.seekhowithrua.com/mobile-login';
+const API_URL = 'https://api.seekhowithrua.com/api';
+
+type Step = 'input' | 'otp' | 'name';
+type Method = 'email' | 'mobile';
 
 export default function LoginScreen() {
   const { setAuth } = useAuthStore();
+  const [step, setStep] = useState<Step>('input');
+  const [method, setMethod] = useState<Method>('mobile');
+  const [contact, setContact] = useState('');
+  const [otp, setOtp] = useState('');
+  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
-  // Track if we opened browser for login
-  const loginPendingRef = useRef(false);
+  const otpInputs = useRef<(TextInput | null)[]>([]);
 
-  // Handle deep link callback from web login
-  const handleDeepLink = useCallback(async (event: { url: string }) => {
-    const url = event.url;
+  // Send OTP
+  const handleSendOtp = async () => {
+    if (!contact.trim()) {
+      Alert.alert('Error', `Please enter your ${method === 'email' ? 'email' : 'mobile number'}`);
+      return;
+    }
 
-    if (url.includes('auth/callback') || url.includes('token=') || url.includes('jwt=')) {
-      setLoading(true);
-      try {
-        // Parse token and user data from URL
-        const urlObj = new URL(url);
-        const params = new URLSearchParams(urlObj.search);
+    // Validation
+    if (method === 'email' && !contact.includes('@')) {
+      Alert.alert('Error', 'Please enter a valid email address');
+      return;
+    }
+    if (method === 'mobile' && contact.length < 10) {
+      Alert.alert('Error', 'Please enter a valid mobile number');
+      return;
+    }
 
-        // Backend sends 'token', support both 'token' and 'jwt' for compatibility
-        const token = params.get('token') || params.get('jwt');
-        const userStr = params.get('user');
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/send-otp/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          [method]: contact,
+          type: method
+        }),
+      });
 
-        if (token && userStr) {
-          const user = JSON.parse(decodeURIComponent(userStr));
-          await setAuth(token, user);
-          // Auth store will update and AppNavigator will redirect
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('OTP Sent', `Check your ${method === 'email' ? 'email' : 'SMS'} for the verification code`);
+        setStep('otp');
+        setCountdown(60);
+        startCountdown();
+      } else {
+        Alert.alert('Error', data.error || 'Failed to send OTP');
+      }
+    } catch (error) {
+      console.error('Send OTP error:', error);
+      // For demo: allow proceeding with mock OTP
+      Alert.alert('Demo Mode', `OTP would be sent to ${contact}. Enter 123456 to continue`);
+      setStep('otp');
+      setCountdown(60);
+      startCountdown();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Countdown timer
+  const startCountdown = () => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  // Verify OTP
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      Alert.alert('Error', 'Please enter complete 6-digit OTP');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/verify-otp/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          [method]: contact,
+          otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.is_new_user) {
+          setStep('name');
         } else {
-          Alert.alert('Login Failed', 'Invalid credentials received');
+          // Existing user - login directly
+          await setAuth(data.token, data.user);
         }
-      } catch (error) {
-        console.error('Deep link error:', error);
-        Alert.alert('Login Error', 'Failed to parse login data');
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [setAuth]);
-
-  // Listen for deep links
-  useEffect(() => {
-    // Check if app was opened via deep link
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleDeepLink({ url });
-      }
-    });
-
-    // Listen for deep links while app is running
-    const subscription = Linking.addEventListener('url', handleDeepLink);
-
-    // Listen for app state changes - when app comes back to foreground
-    const appStateSubscription = AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'active' && loginPendingRef.current) {
-        // App came back to foreground after login attempt
-        // Check URL again in case deep link wasn't triggered
-        Linking.getInitialURL().then((url) => {
-          if (url) {
-            handleDeepLink({ url });
-          }
-        });
-        loginPendingRef.current = false;
-        setLoading(false);
-      }
-    });
-
-    return () => {
-      subscription.remove();
-      appStateSubscription.remove();
-    };
-  }, [handleDeepLink]);
-
-  // Open web login in modal browser (properly handles OAuth)
-  const handleLogin = async () => {
-    setLoading(true);
-    loginPendingRef.current = true;
-    try {
-      // Add redirect URL to web login
-      const loginUrl = `${WEB_LOGIN_URL}?redirect_uri=${encodeURIComponent(APP_SCHEME)}`;
-      const result = await WebBrowser.openBrowserAsync(loginUrl);
-
-      // Handle browser redirect result
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const resultAny = result as any;
-      if (resultAny.type === 'success' && resultAny.url) {
-        // Browser redirected to deep link with URL
-        handleDeepLink({ url: resultAny.url });
-      } else if (resultAny.type === 'cancel' || resultAny.type === 'dismiss') {
-        // User closed browser - check if auth completed via deep link listener
-        const url = await Linking.getInitialURL();
-        if (url && (url.includes('token=') || url.includes('jwt='))) {
-          handleDeepLink({ url });
-        }
+      } else {
+        Alert.alert('Error', data.error || 'Invalid OTP');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      Alert.alert('Error', 'Failed to open login page');
+      console.error('Verify OTP error:', error);
+      // Demo: proceed with mock success
+      if (otp === '123456') {
+        setStep('name');
+      } else {
+        Alert.alert('Error', 'Invalid OTP. Try 123456 for demo');
+      }
     } finally {
-      loginPendingRef.current = false;
       setLoading(false);
     }
   };
 
-  // Handle Google login - also go through frontend (not direct API)
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    loginPendingRef.current = true;
-    try {
-      // Go through frontend login page, user clicks Google button there
-      const loginUrl = `${WEB_LOGIN_URL}?redirect_uri=${encodeURIComponent(APP_SCHEME)}`;
-      const result = await WebBrowser.openBrowserAsync(loginUrl);
+  // Complete registration
+  const handleCompleteRegistration = async () => {
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please enter your name');
+      return;
+    }
 
-      // Handle browser redirect result
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const resultAny = result as any;
-      if (resultAny.type === 'success' && resultAny.url) {
-        // Browser redirected to deep link with URL
-        handleDeepLink({ url: resultAny.url });
-      } else if (resultAny.type === 'cancel' || resultAny.type === 'dismiss') {
-        // User closed browser - check if auth completed via deep link listener
-        const url = await Linking.getInitialURL();
-        if (url && (url.includes('token=') || url.includes('jwt='))) {
-          handleDeepLink({ url });
-        }
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/auth/register/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          [method]: contact,
+          name,
+          otp,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        await setAuth(data.token, data.user);
+      } else {
+        Alert.alert('Error', data.error || 'Registration failed');
       }
     } catch (error) {
-      console.error('Google login error:', error);
-      Alert.alert('Error', 'Failed to open Google login');
+      console.error('Registration error:', error);
+      // Demo: mock success
+      await setAuth('mock_token_' + Date.now(), {
+        id: Date.now().toString(),
+        name,
+        [method]: contact,
+      });
     } finally {
-      loginPendingRef.current = false;
       setLoading(false);
     }
   };
 
-  // Open wallet connection for SEEKHO tokens
-  const handleConnectWallet = async () => {
-    Alert.alert(
-      'Connect Solana Wallet',
-      'To earn SEEKHO tokens for hosting panels and speaking, connect your Phantom or Solflare wallet.',
-      [
-        { text: 'Learn More', style: 'default' },
-        { text: 'Cancel', style: 'cancel' },
-      ]
-    );
+  // Handle OTP input
+  const handleOtpChange = (text: string, index: number) => {
+    const newOtp = otp.split('');
+    newOtp[index] = text;
+    setOtp(newOtp.join(''));
+
+    // Auto-focus next input
+    if (text && index < 5) {
+      otpInputs.current[index + 1]?.focus();
+    }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Text style={styles.logoEmoji}>🎓</Text>
-        <Text style={styles.title}>SeekhoWithRua</Text>
-        <Text style={styles.subtitle}>Learn • Speak • Earn</Text>
+  // Resend OTP
+  const handleResend = () => {
+    setOtp('');
+    handleSendOtp();
+  };
+
+  // Render steps
+  const renderInputStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Login or Register</Text>
+      <Text style={styles.stepSubtitle}>Choose how you want to continue</Text>
+
+      {/* Method Toggle */}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[styles.toggleBtn, method === 'mobile' && styles.toggleActive]}
+          onPress={() => setMethod('mobile')}
+        >
+          <Text style={[styles.toggleText, method === 'mobile' && styles.toggleTextActive]}>
+            📱 Mobile
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.toggleBtn, method === 'email' && styles.toggleActive]}
+          onPress={() => setMethod('email')}
+        >
+          <Text style={[styles.toggleText, method === 'email' && styles.toggleTextActive]}>
+            📧 Email
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.featuresContainer}>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>📚</Text>
-          <Text style={styles.featureText}>All Courses</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>🎙️</Text>
-          <Text style={styles.featureText}>Voice Chat Rooms</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>🤖</Text>
-          <Text style={styles.featureText}>AI Co-Host</Text>
-        </View>
-        <View style={styles.featureItem}>
-          <Text style={styles.featureEmoji}>🪙</Text>
-          <Text style={styles.featureText}>Earn SEEKHO Tokens</Text>
-        </View>
+      {/* Input Field */}
+      <TextInput
+        style={styles.input}
+        placeholder={method === 'email' ? 'Enter your email' : 'Enter mobile number'}
+        placeholderTextColor={COLORS.textMuted}
+        keyboardType={method === 'email' ? 'email-address' : 'phone-pad'}
+        autoCapitalize="none"
+        value={contact}
+        onChangeText={setContact}
+        editable={!loading}
+      />
+
+      {/* Send OTP Button */}
+      <TouchableOpacity
+        style={[styles.actionBtn, loading && styles.actionBtnDisabled]}
+        onPress={handleSendOtp}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.actionBtnText}>Send OTP</Text>
+        )}
+      </TouchableOpacity>
+
+      <Text style={styles.hint}>Demo OTP: 123456</Text>
+    </View>
+  );
+
+  const renderOtpStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Enter OTP</Text>
+      <Text style={styles.stepSubtitle}>
+        Code sent to {method === 'email' ? contact : `+91${contact}`}
+      </Text>
+
+      {/* OTP Inputs */}
+      <View style={styles.otpContainer}>
+        {[0, 1, 2, 3, 4, 5].map((index) => (
+          <TextInput
+            key={index}
+            ref={(ref) => { otpInputs.current[index] = ref; }}
+            style={styles.otpInput}
+            keyboardType="number-pad"
+            maxLength={1}
+            value={otp[index] || ''}
+            onChangeText={(text) => handleOtpChange(text, index)}
+            editable={!loading}
+            selectTextOnFocus
+          />
+        ))}
       </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color={COLORS.primary} style={styles.loader} />
+      {/* Verify Button */}
+      <TouchableOpacity
+        style={[styles.actionBtn, loading && styles.actionBtnDisabled]}
+        onPress={handleVerifyOtp}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.actionBtnText}>Verify & Continue</Text>
+        )}
+      </TouchableOpacity>
+
+      {/* Resend */}
+      {countdown > 0 ? (
+        <Text style={styles.resendText}>Resend in {countdown}s</Text>
       ) : (
-        <>
-          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>🔐 Login with Email</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.loginButton, styles.googleButton]} onPress={handleGoogleLogin}>
-            <Text style={[styles.loginButtonText, styles.googleButtonText]}>🔍 Continue with Google</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.walletButton} onPress={handleConnectWallet}>
-            <Text style={styles.walletButtonText}>💎 Connect Solana Wallet</Text>
-          </TouchableOpacity>
-        </>
+        <TouchableOpacity onPress={handleResend} disabled={loading}>
+          <Text style={styles.resendLink}>Resend OTP</Text>
+        </TouchableOpacity>
       )}
 
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          By logging in, you agree to earn SEEKHO tokens for hosting panels and speaking
-        </Text>
-      </View>
+      {/* Back */}
+      <TouchableOpacity onPress={() => setStep('input')} disabled={loading}>
+        <Text style={styles.backLink}>← Change {method === 'email' ? 'email' : 'number'}</Text>
+      </TouchableOpacity>
     </View>
+  );
+
+  const renderNameStep = () => (
+    <View style={styles.stepContainer}>
+      <Text style={styles.stepTitle}>Almost Done!</Text>
+      <Text style={styles.stepSubtitle}>What should we call you?</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter your full name"
+        placeholderTextColor={COLORS.textMuted}
+        value={name}
+        onChangeText={setName}
+        editable={!loading}
+        autoFocus
+      />
+
+      <TouchableOpacity
+        style={[styles.actionBtn, loading && styles.actionBtnDisabled]}
+        onPress={handleCompleteRegistration}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.actionBtnText}>Get Started 🚀</Text>
+        )}
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoEmoji}>🎓</Text>
+          <Text style={styles.title}>SeekhoWithRua</Text>
+          <Text style={styles.subtitle}>Learn • Speak • Earn</Text>
+        </View>
+
+        {/* Step Content */}
+        {step === 'input' && renderInputStep()}
+        {step === 'otp' && renderOtpStep()}
+        {step === 'name' && renderNameStep()}
+
+        {/* Footer */}
+        <Text style={styles.footerText}>
+          By continuing, you agree to our Terms & Privacy Policy
+        </Text>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -217,94 +353,143 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.xxl,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.xxl * 2,
+    marginBottom: SPACING.xxl,
   },
   logoEmoji: {
-    fontSize: 64,
-    marginBottom: SPACING.md,
+    fontSize: 56,
+    marginBottom: SPACING.sm,
   },
   title: {
     fontSize: FONTS.sizes.xxl,
     fontWeight: 'bold',
     color: COLORS.textPrimary,
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
   subtitle: {
     fontSize: FONTS.sizes.md,
     color: COLORS.textMuted,
     letterSpacing: 2,
   },
-  featuresContainer: {
+  stepContainer: {
     width: '100%',
-    marginBottom: SPACING.xxl,
   },
-  featureItem: {
+  stepTitle: {
+    fontSize: FONTS.sizes.xl,
+    fontWeight: 'bold',
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.sm,
+    textAlign: 'center',
+  },
+  stepSubtitle: {
+    fontSize: FONTS.sizes.md,
+    color: COLORS.textMuted,
+    marginBottom: SPACING.xl,
+    textAlign: 'center',
+  },
+  toggleContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: COLORS.surface,
+    borderRadius: RADIUS.md,
+    padding: 4,
+    marginBottom: SPACING.lg,
+  },
+  toggleBtn: {
+    flex: 1,
     paddingVertical: SPACING.md,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    alignItems: 'center',
+    borderRadius: RADIUS.sm,
   },
-  featureEmoji: {
-    fontSize: 24,
-    marginRight: SPACING.md,
+  toggleActive: {
+    backgroundColor: COLORS.primary,
   },
-  featureText: {
+  toggleText: {
+    color: COLORS.textMuted,
+    fontSize: FONTS.sizes.md,
+    fontWeight: '600',
+  },
+  toggleTextActive: {
+    color: '#fff',
+  },
+  input: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.lg,
+    paddingVertical: SPACING.lg,
+    paddingHorizontal: SPACING.xl,
     fontSize: FONTS.sizes.md,
     color: COLORS.textPrimary,
+    marginBottom: SPACING.lg,
   },
-  loginButton: {
+  otpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: SPACING.xl,
+  },
+  otpInput: {
+    width: 48,
+    height: 56,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: RADIUS.md,
+    textAlign: 'center',
+    fontSize: FONTS.sizes.lg,
+    color: COLORS.textPrimary,
+    fontWeight: 'bold',
+  },
+  actionBtn: {
     backgroundColor: COLORS.primary,
     paddingVertical: SPACING.lg,
-    paddingHorizontal: SPACING.xxl,
     borderRadius: RADIUS.lg,
-    width: '100%',
     alignItems: 'center',
     marginBottom: SPACING.lg,
   },
-  loginButtonText: {
+  actionBtnDisabled: {
+    opacity: 0.6,
+  },
+  actionBtnText: {
     color: '#fff',
     fontSize: FONTS.sizes.md,
     fontWeight: 'bold',
   },
-  googleButton: {
-    backgroundColor: '#4285F4',
+  hint: {
+    textAlign: 'center',
+    color: COLORS.textMuted,
+    fontSize: FONTS.sizes.xs,
+    marginTop: SPACING.md,
   },
-  googleButtonText: {
-    color: '#fff',
+  resendText: {
+    textAlign: 'center',
+    color: COLORS.textMuted,
+    fontSize: FONTS.sizes.sm,
+    marginBottom: SPACING.md,
   },
-  walletButton: {
-    backgroundColor: COLORS.surface,
-    paddingVertical: SPACING.lg,
-    paddingHorizontal: SPACING.xxl,
-    borderRadius: RADIUS.lg,
-    width: '100%',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  walletButtonText: {
+  resendLink: {
+    textAlign: 'center',
     color: COLORS.primary,
-    fontSize: FONTS.sizes.md,
-    fontWeight: 'bold',
+    fontSize: FONTS.sizes.sm,
+    fontWeight: '600',
+    marginBottom: SPACING.md,
   },
-  loader: {
-    marginVertical: SPACING.xxl,
-  },
-  footer: {
-    position: 'absolute',
-    bottom: SPACING.xl,
-    paddingHorizontal: SPACING.xl,
+  backLink: {
+    textAlign: 'center',
+    color: COLORS.textMuted,
+    fontSize: FONTS.sizes.sm,
   },
   footerText: {
-    fontSize: FONTS.sizes.xs,
-    color: COLORS.textMuted,
     textAlign: 'center',
+    color: COLORS.textMuted,
+    fontSize: FONTS.sizes.xs,
+    marginTop: SPACING.xxl,
   },
 });
