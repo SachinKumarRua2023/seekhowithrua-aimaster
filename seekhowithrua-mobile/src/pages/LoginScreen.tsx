@@ -50,6 +50,12 @@ export default function LoginScreen() {
         }),
       });
 
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Backend returned non-JSON response (endpoint not found)');
+      }
+
       const data = await response.json();
 
       if (response.ok) {
@@ -103,6 +109,12 @@ export default function LoginScreen() {
         }),
       });
 
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Backend returned non-JSON response');
+      }
+
       const data = await response.json();
 
       if (response.ok) {
@@ -146,6 +158,12 @@ export default function LoginScreen() {
           otp,
         }),
       });
+
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Backend returned non-JSON response');
+      }
 
       const data = await response.json();
 

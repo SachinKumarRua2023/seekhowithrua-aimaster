@@ -14,6 +14,110 @@ from django.db import IntegrityError
 
 User = get_user_model()
 
+# In-memory OTP storage (use Redis in production)
+_otp_store = {}
+
+def _generate_otp():
+    """Generate 6-digit OTP"""
+    import random
+    return str(random.randint(100000, 999999))
+
+def _send_sms_otp(mobile, otp):
+    """Send OTP via SMS (integrate Twilio/SNS here)"""
+    # TODO: Integrate Twilio or AWS SNS
+    print(f"[SMS OTP] To: {mobile}, OTP: {otp}")
+    return True
+
+def _send_email_otp(email, otp):
+    """Send OTP via Email (integrate SendGrid/AWS SES here)"""
+    # TODO: Integrate SendGrid or AWS SES
+    print(f"[Email OTP] To: {email}, OTP: {otp}")
+    return True
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_otp(request):
+    """Send OTP to mobile or email"""
+    mobile = request.data.get('mobile')
+    email = request.data.get('email')
+    otp_type = request.data.get('type', 'mobile')
+
+    if otp_type == 'mobile' and not mobile:
+        return Response({'error': 'Mobile number is required'}, status=400)
+    if otp_type == 'email' and not email:
+        return Response({'error': 'Email is required'}, status=400)
+
+    # Generate OTP
+    otp = _generate_otp()
+
+    # Store OTP (5 minute expiry)
+    key = mobile if otp_type == 'mobile' else email
+    _otp_store[key] = {'otp': otp, 'type': otp_type, 'attempts': 0}
+
+    # Send OTP
+    if otp_type == 'mobile':
+        _send_sms_otp(mobile, otp)
+    else:
+        _send_email_otp(email, otp)
+
+    return Response({
+        'success': True,
+        'message': f'OTP sent to your {otp_type}',
+        # In development only
+        'dev_otp': otp
+    })
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_otp(request):
+    """Verify OTP and return auth token"""
+    mobile = request.data.get('mobile')
+    email = request.data.get('email')
+    otp = request.data.get('otp')
+    contact = mobile or email
+    otp_type = 'mobile' if mobile else 'email'
+
+    if not contact or not otp:
+        return Response({'error': 'Contact and OTP are required'}, status=400)
+
+    # Check OTP
+    stored = _otp_store.get(contact)
+    if not stored or stored['otp'] != otp:
+        return Response({'error': 'Invalid OTP'}, status=400)
+
+    # Clear OTP after verification
+    del _otp_store[contact]
+
+    # Check if user exists
+    user = None
+    if otp_type == 'mobile':
+        user = User.objects.filter(username=mobile).first()
+    else:
+        user = User.objects.filter(email=email).first()
+
+    if user:
+        # Existing user - generate token
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            'success': True,
+            'is_new_user': False,
+            'token': token.key,
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+            }
+        })
+    else:
+        # New user - need registration
+        return Response({
+            'success': True,
+            'is_new_user': True,
+            'message': 'Please complete registration'
+        })
+
 # Google OAuth settings - using environment variables
 GOOGLE_CLIENT_ID = getattr(settings, 'GOOGLE_CLIENT_ID', '')
 GOOGLE_CLIENT_SECRET = getattr(settings, 'GOOGLE_CLIENT_SECRET', '')
@@ -192,22 +296,39 @@ def login(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
-    """User registration"""
+    """User registration - supports both password and OTP-based"""
     email = request.data.get('email')
+    mobile = request.data.get('mobile')
     password = request.data.get('password')
-    username = request.data.get('username') or email.split('@')[0] if email else None
-    first_name = request.data.get('first_name', '')
-    last_name = request.data.get('last_name', '')
-    
-    if not email or not password:
-        return Response({'error': 'Email and password are required'}, status=400)
-    
-    if len(password) < 8:
-        return Response({'error': 'Password must be at least 8 characters'}, status=400)
-    
-    if User.objects.filter(email=email).exists():
+    name = request.data.get('name', '')
+    otp = request.data.get('otp')
+
+    # Determine registration type
+    if mobile:
+        # Mobile OTP registration
+        username = mobile
+        email = email or f'{mobile}@mobile.user'
+        first_name = name or mobile
+        last_name = ''
+    elif email:
+        # Email registration (password or OTP)
+        username = request.data.get('username') or email.split('@')[0]
+        first_name = request.data.get('first_name') or name.split(' ')[0] if name else email.split('@')[0]
+        last_name = request.data.get('last_name') or ' '.join(name.split(' ')[1:]) if name and ' ' in name else ''
+    else:
+        return Response({'error': 'Email or mobile is required'}, status=400)
+
+    # Check if user exists
+    if email and User.objects.filter(email=email).exists():
         return Response({'error': 'Email already registered'}, status=400)
-    
+    if User.objects.filter(username=username).exists():
+        return Response({'error': 'Username already exists'}, status=400)
+
+    # Generate password if not provided (OTP-based)
+    if not password:
+        import secrets
+        password = secrets.token_urlsafe(16)
+
     try:
         user = User.objects.create_user(
             username=username,
@@ -216,8 +337,15 @@ def register(request):
             first_name=first_name,
             last_name=last_name,
         )
+
+        # Store mobile in profile if provided
+        if mobile:
+            # You can extend User model with a profile to store mobile
+            pass
+
         token, _ = Token.objects.get_or_create(user=user)
         return Response({
+            'success': True,
             'token': token.key,
             'user': {
                 'id': user.id,
@@ -225,7 +353,6 @@ def register(request):
                 'username': user.username,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'is_trainer': user.is_trainer,
             }
         })
     except IntegrityError:
