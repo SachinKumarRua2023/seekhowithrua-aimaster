@@ -1,11 +1,10 @@
 // mobile/src/pages/LoginScreen.tsx
 // JWT Auth with deep links from app.seekhowithrua.com
 
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import {
-  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert
+  View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, AppState
 } from 'react-native';
-import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import { useAuthStore } from '../store/authStore';
 import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
@@ -13,6 +12,7 @@ import { COLORS, FONTS, SPACING, RADIUS } from '../constants/theme';
 // Deep link scheme
 const APP_SCHEME = 'seekhowithrua://auth/callback';
 const WEB_LOGIN_URL = 'https://app.seekhowithrua.com/mobile-login';
+const GOOGLE_LOGIN_URL = 'https://api.seekhowithrua.com/api/auth/google/';
 
 export default function LoginScreen() {
   const { setAuth } = useAuthStore();
@@ -60,35 +60,59 @@ export default function LoginScreen() {
 
     // Listen for deep links while app is running
     const subscription = Linking.addEventListener('url', handleDeepLink);
-    
+
+    // Listen for app state changes - when app comes back to foreground
+    const appStateSubscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active' && loginPendingRef.current) {
+        // App came back to foreground after login attempt
+        // Check URL again in case deep link wasn't triggered
+        Linking.getInitialURL().then((url) => {
+          if (url) {
+            handleDeepLink({ url });
+          }
+        });
+        loginPendingRef.current = false;
+        setLoading(false);
+      }
+    });
+
     return () => {
       subscription.remove();
+      appStateSubscription.remove();
     };
   }, [handleDeepLink]);
+
+  // Track if we opened browser for login
+  const loginPendingRef = useRef(false);
 
   // Open web login in browser
   const handleLogin = async () => {
     setLoading(true);
+    loginPendingRef.current = true;
     try {
       // Add redirect URL to web login
       const loginUrl = `${WEB_LOGIN_URL}?redirect_uri=${encodeURIComponent(APP_SCHEME)}`;
-      
-      const result = await WebBrowser.openAuthSessionAsync(
-        loginUrl,
-        APP_SCHEME,
-        {
-          showInRecents: true,
-          preferEphemeralSession: false,
-        }
-      );
-
-      if (result.type === 'success' && result.url) {
-        handleDeepLink({ url: result.url });
-      }
+      await Linking.openURL(loginUrl);
     } catch (error) {
       console.error('Login error:', error);
       Alert.alert('Error', 'Failed to open login page');
-    } finally {
+      loginPendingRef.current = false;
+      setLoading(false);
+    }
+  };
+
+  // Handle Google login
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    loginPendingRef.current = true;
+    try {
+      const callbackUrl = `https://api.seekhowithrua.com/api/auth/google/callback/?redirect_uri=${encodeURIComponent(APP_SCHEME)}`;
+      const googleUrl = `${GOOGLE_LOGIN_URL}?redirect_uri=${encodeURIComponent(callbackUrl)}`;
+      await Linking.openURL(googleUrl);
+    } catch (error) {
+      console.error('Google login error:', error);
+      Alert.alert('Error', 'Failed to open Google login');
+      loginPendingRef.current = false;
       setLoading(false);
     }
   };
@@ -137,7 +161,11 @@ export default function LoginScreen() {
       ) : (
         <>
           <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-            <Text style={styles.loginButtonText}>🔐 Login with app.seekhowithrua.com</Text>
+            <Text style={styles.loginButtonText}>🔐 Login with Email</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.loginButton, styles.googleButton]} onPress={handleGoogleLogin}>
+            <Text style={[styles.loginButtonText, styles.googleButtonText]}>🔍 Continue with Google</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.walletButton} onPress={handleConnectWallet}>
@@ -214,6 +242,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: FONTS.sizes.md,
     fontWeight: 'bold',
+  },
+  googleButton: {
+    backgroundColor: '#4285F4',
+  },
+  googleButtonText: {
+    color: '#fff',
   },
   walletButton: {
     backgroundColor: COLORS.surface,
