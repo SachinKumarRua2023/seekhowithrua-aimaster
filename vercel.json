@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "framework": null,
+  "buildCommand": null,
+  "outputDirectory": ".",
   "routes": [
     {
       "src": "/aiMaster",
@@ -8,6 +11,14 @@
     {
       "src": "/aiMaster/(.*)",
       "dest": "/seekhowithrua-lms/aiMaster/index.html"
+    },
+    {
+      "src": "/seekhowithrua-aiMaster/(.*)",
+      "dest": "/seekhowithrua-aiMaster/$1"
+    },
+    {
+      "src": "/seekhowithrua-aiMaster",
+      "dest": "/seekhowithrua-aiMaster/index.html"
     },
     {
       "src": "/(.*)",
