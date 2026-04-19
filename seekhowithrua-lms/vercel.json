@@ -4,5 +4,19 @@
     "api/chat.js": {
       "runtime": "nodejs20.x"
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    },
+    {
+      "src": "/aiMaster/(.*)",
+      "dest": "/aiMaster/index.html"
+    },
+    {
+      "src": "/aiMaster",
+      "dest": "/aiMaster/index.html"
+    }
+  ]
 }
