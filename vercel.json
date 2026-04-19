@@ -3,6 +3,10 @@
   "framework": null,
   "routes": [
     {
+      "src": "/api/chat",
+      "dest": "/api/chat.js"
+    },
+    {
       "src": "/seekhowithrua-aiMaster/(.*)",
       "dest": "/seekhowithrua-aiMaster/$1"
     },
