@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Data Science & AI Pro Bundle | SeekhoWithRua - One Platform</title>
-  <meta name="description" content="Complete Data Science & AI Bundle with Web/App Implementation. Gaming, Unlimited AI Chat, Live Voice Rooms, Ranks & Hackathons. All-in-one platform at seekhowithrua.com">
+  <title>Full Stack AI ML Course | SeekhoWithRua - Agentic AI, GenAI & Data Science</title>
+  <meta name="description" content="Complete Full Stack AI ML Course with Data Science, Agentic AI, n8n, LangChain, RAG, Gen AI, Prompt Engineering. Learn deployment, build industry-level projects with full guidance.">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
   <link rel="stylesheet" href="css/lms.css">
@@ -59,7 +59,7 @@
       border-radius: 15px;
       padding: 15px 30px;
       margin: 25px auto;
-      max-width: 600px;
+      max-width: 800px;
       font-size: 18px;
       font-weight: 700;
       color: #00ff88;
@@ -495,10 +495,124 @@
       color: #00d4ff;
       margin-bottom: 15px;
     }
+    .projects-section {
+      background: linear-gradient(135deg, rgba(0,255,136,0.05), rgba(124,58,237,0.05));
+      padding: 60px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .project-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(0, 255, 136, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card:hover {
+      transform: translateY(-8px);
+      border-color: #00ff88;
+      box-shadow: 0 20px 50px rgba(0, 255, 136, 0.2);
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #00ff88, #00d4ff, #7c3aed);
+    }
+    .project-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 48px;
+      font-weight: 900;
+      color: rgba(124, 58, 237, 0.3);
+      position: absolute;
+      top: 10px;
+      right: 20px;
+    }
+    .project-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+    }
+    .project-card h3 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .project-tag {
+      background: rgba(124, 58, 237, 0.3);
+      color: #00d4ff;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .project-card p {
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    .project-outcome {
+      background: rgba(0, 255, 136, 0.1);
+      border-left: 3px solid #00ff88;
+      padding: 12px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+    }
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .tool-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .tool-card:hover {
+      transform: translateY(-5px);
+      border-color: #7c3aed;
+      box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+    }
+    .tool-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+    .tool-card h4 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .tool-card p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+    }
     @media (max-width: 768px) {
       .bundle-hero h1 { font-size: 28px; }
       .current-price { font-size: 40px; }
       .features-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -521,32 +635,32 @@
 
   <main>
     <section class="bundle-hero">
-      <div class="bundle-badge">🔥 Data Science & AI Mastery</div>
-      <h1>Data Science & AI Pro Bundle</h1>
-      <p class="bundle-subtitle">From Basics to ML Implementation</p>
-      <p class="bundle-tagline">Gaming + Unlimited AI + Live Voice Chat + Ranks + Hackathons</p>
+      <div class="bundle-badge">🚀 Full Stack AI ML Mastery</div>
+      <h1>Full Stack AI ML Course</h1>
+      <p class="bundle-subtitle">Data Science • Agentic AI • n8n • LangChain • RAG • Gen AI</p>
+      <p class="bundle-tagline">Build Industry-Level Projects with Deployment Guidance</p>
       
       <div class="platform-badge">
-        🌟 ONE PLATFORM: seekhowithrua.com — Everything You Need! 🌟
+        🌟 Master Claude AI, Coworker, GPT-4o, Gemini & Latest AI Models — Everything Included! 🌟
       </div>
 
       <div class="price-container">
         <div class="price-row">
-          <span class="original-price">$1,999</span>
+          <span class="original-price">$2,999</span>
           <span class="arrow-icon">➜</span>
           <span class="current-price" id="finalPrice">$999</span>
-          <span class="discount-badge">SAVE $1,000</span>
+          <span class="discount-badge">SAVE $2,000</span>
         </div>
-        <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">Complete bundle with Gen AI, Claude AI, Coworker, LangChain, n8n, RAG & Agentic AI!</p>
+        <p style="color: rgba(255,255,255,0.8); margin-bottom: 20px;">Complete bundle with all AI/ML tools, deployment training & industry projects!</p>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 25px 0;">
           <div style="background: rgba(0, 255, 136, 0.1); border: 2px solid #00ff88; border-radius: 15px; padding: 25px; text-align: center;">
             <div style="background: #00ff88; color: #000; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-bottom: 15px;">🎁 BEST DEAL</div>
             <div style="font-family: 'Orbitron', sans-serif; font-size: 40px; font-weight: 900; color: #00ff88;">$999</div>
-            <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 10px 0;">With Coupon</p>
+            <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 10px 0;">With Coupon Code</p>
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin: 10px 0;">
-              <code style="color: #00d4ff; font-size: 16px;">SUPERTCLASSES</code>
-              <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 5px 0 0;">or SEEKHOWITHURAKNOWN</p>
+              <code style="color: #00d4ff; font-size: 16px;">AIMASTER2024</code>
+              <p style="font-size: 11px; color: rgba(255,255,255,0.6); margin: 5px 0 0;">or SEEKHOWITHRUA</p>
             </div>
             <button class="btn-apply" onclick="selectPrice(999)" style="width: 100%;">Choose This Plan</button>
           </div>
@@ -556,7 +670,7 @@
             <div style="font-family: 'Orbitron', sans-serif; font-size: 40px; font-weight: 900; color: #fff;">$1,499</div>
             <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin: 10px 0;">Without Coupon</p>
             <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin: 10px 0;">
-              <p style="color: rgba(255,255,255,0.6); font-size: 14px; margin: 0;">Full Access • No Code</p>
+              <p style="color: rgba(255,255,255,0.6); font-size: 14px; margin: 0;">Full Access • Lifetime</p>
             </div>
             <button class="btn-apply" onclick="selectPrice(1499)" style="width: 100%; background: linear-gradient(135deg, #666, #888);">Choose This Plan</button>
           </div>
@@ -569,9 +683,9 @@
           <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 15px;">Click to copy • Get $999 price</p>
 
           <div class="coupon-display-row">
-            <div class="coupon-code-box" onclick="copyCoupon('SUPERTCLASSES')">SUPERTCLASSES</div>
+            <div class="coupon-code-box" onclick="copyCoupon('AIMASTER2024')">AIMASTER2024</div>
             <span style="color: rgba(255,255,255,0.5);">or</span>
-            <div class="coupon-code-box" onclick="copyCoupon('SEEKHOWITHURAKNOWN')">SEEKHOWITHURAKNOWN</div>
+            <div class="coupon-code-box" onclick="copyCoupon('SEEKHOWITHRUA')">SEEKHOWITHRUA</div>
           </div>
 
           <div class="coupon-input-row">
@@ -588,290 +702,441 @@
         <div class="guarantee-badges">
           <span class="guarantee-badge">✓ 100% Job Support</span>
           <span class="guarantee-badge">✓ Resume + LinkedIn + Referrals</span>
-          <span class="guarantee-badge">✓ Industry Level Course</span>
+          <span class="guarantee-badge">✓ Industry Level Projects</span>
+          <span class="guarantee-badge">✓ Deployment Training</span>
         </div>
       </div>
     </section>
 
-    <!-- ANIMATED STUDENT TRANSFORMATION - CONTINUOUS LOOP -->
-    <section style="background: linear-gradient(180deg, #0a0a1a 0%, #1a0a2e 50%, #0f0f23 100%); padding: 60px 20px; overflow: hidden; position: relative;">
-      <div style="max-width: 1200px; margin: 0 auto; position: relative; z-index: 10;">
-        <h2 style="text-align: center; margin-bottom: 30px; font-family: 'Orbitron', sans-serif; font-size: 1.8rem; background: linear-gradient(135deg, #fff, #00d4ff, #7c3aed); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">
-          Watch Students Transform 🪄
-        </h2>
-        <p style="text-align: center; color: rgba(255,255,255,0.6); margin-bottom: 40px; font-size: 14px;">
-          See the magic happen in real-time loop
-        </p>
-        
-        <!-- Animation Stage -->
-        <div style="position: relative; height: 400px; overflow: hidden; border-radius: 20px; background: rgba(0,0,0,0.2); border: 1px solid rgba(124,58,237,0.2);">
-          
-          <!-- Portal Center -->
-          <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 200px; height: 200px; z-index: 5;">
-            <!-- Rotating Courses Ring -->
-            <div style="position: absolute; width: 100%; height: 100%; animation: ringRotate 15s linear infinite;">
-              <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #7c3aed, #00d4ff); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);">🤖 AI</div>
-              <div style="position: absolute; top: 20%; right: -30px; background: linear-gradient(135deg, #00d4ff, #00ff88); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(0, 212, 255, 0.5);">💻 Dev</div>
-              <div style="position: absolute; bottom: 20%; right: -30px; background: linear-gradient(135deg, #ff4757, #ff6b7a); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.5);">📊 Data</div>
-              <div style="position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #00ff88, #00d4ff); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(0, 255, 136, 0.5);">🎮 Game</div>
-              <div style="position: absolute; bottom: 20%; left: -30px; background: linear-gradient(135deg, #f39c12, #f1c40f); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.5);">📱 Mobile</div>
-              <div style="position: absolute; top: 20%; left: -30px; background: linear-gradient(135deg, #9b59b6, #e74c3c); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.5);">🚀 IoT</div>
-            </div>
-            
-            <!-- Portal Core -->
-            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 120px; height: 120px; background: radial-gradient(circle, rgba(124, 58, 237, 0.9) 0%, rgba(0, 212, 255, 0.7) 40%, transparent 70%); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 50px rgba(124, 58, 237, 0.8), inset 0 0 30px rgba(255,255,255,0.2); animation: portalPulse 2s ease-in-out infinite;">
-              <div style="text-align: center; color: #fff; font-weight: 900; font-size: 12px;">
-                <div style="font-size: 24px;">🎓</div>
-                <div>SWR</div>
-                <div style="font-size: 9px; opacity: 0.8;">BUNDLE</div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Student 1 Journey -->
-          <div style="position: absolute; top: 15%; width: 100%; height: 70px;">
-            <div style="position: absolute; animation: studentLoop1 8s linear infinite;">
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff4757, #ff6b7a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); animation: sadState 8s linear infinite;">😰</div>
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00ff88, #00cc6a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); position: absolute; top: 0; opacity: 0; animation: happyState 8s linear infinite;">😎</div>
-              <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 4px 10px; border-radius: 10px; white-space: nowrap; font-weight: 600;">
-                <span style="background: rgba(255, 71, 87, 0.3); color: #ff6b7a; border: 1px solid #ff4757; animation: tagSadAnim 8s linear infinite;">😢 No Job</span>
-                <span style="background: rgba(0, 255, 136, 0.3); color: #00ff88; border: 1px solid #00ff88; position: absolute; left: 0; animation: tagHappyAnim 8s linear infinite;">🎉 Hired!</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Student 2 Journey -->
-          <div style="position: absolute; top: 42%; width: 100%; height: 70px;">
-            <div style="position: absolute; animation: studentLoop2 8s linear infinite 2.6s;">
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff4757, #ff6b7a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); animation: sadState 8s linear infinite 2.6s;">😨</div>
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00ff88, #00cc6a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); position: absolute; top: 0; opacity: 0; animation: happyState 8s linear infinite 2.6s;">🤩</div>
-              <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 4px 10px; border-radius: 10px; white-space: nowrap; font-weight: 600;">
-                <span style="background: rgba(255, 71, 87, 0.3); color: #ff6b7a; border: 1px solid #ff4757; animation: tagSadAnim 8s linear infinite 2.6s;">😰 Confused</span>
-                <span style="background: rgba(0, 255, 136, 0.3); color: #00ff88; border: 1px solid #00ff88; position: absolute; left: 0; animation: tagHappyAnim 8s linear infinite 2.6s;">💼 Placed!</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Student 3 Journey -->
-          <div style="position: absolute; top: 70%; width: 100%; height: 70px;">
-            <div style="position: absolute; animation: studentLoop3 8s linear infinite 5.3s;">
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #ff4757, #ff6b7a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); animation: sadState 8s linear infinite 5.3s;">😥</div>
-              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #00ff88, #00cc6a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); position: absolute; top: 0; opacity: 0; animation: happyState 8s linear infinite 5.3s;">😏</div>
-              <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 4px 10px; border-radius: 10px; white-space: nowrap; font-weight: 600;">
-                <span style="background: rgba(255, 71, 87, 0.3); color: #ff6b7a; border: 1px solid #ff4757; animation: tagSadAnim 8s linear infinite 5.3s;">😓 Fear</span>
-                <span style="background: rgba(0, 255, 136, 0.3); color: #00ff88; border: 1px solid #00ff88; position: absolute; left: 0; animation: tagHappyAnim 8s linear infinite 5.3s;">🔥 Confident!</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Entry/Exit Labels -->
-          <div style="position: absolute; left: 10%; top: 50%; transform: translateY(-50%); text-align: center;">
-            <div style="font-size: 12px; color: #ff6b7a; font-weight: 700; margin-bottom: 5px;">😰 ENTER</div>
-            <div style="font-size: 10px; color: rgba(255,255,255,0.4);">Sad & Confused</div>
-          </div>
-          <div style="position: absolute; right: 10%; top: 50%; transform: translateY(-50%); text-align: center;">
-            <div style="font-size: 12px; color: #00ff88; font-weight: 700; margin-bottom: 5px;">EXIT 😎</div>
-            <div style="font-size: 10px; color: rgba(255,255,255,0.4);">Confident & Hired</div>
-          </div>
-        </div>
-        
-        <!-- CTA -->
-        <div style="text-align: center; margin-top: 40px;">
-          <button class="btn-main-cta" onclick="enrollNow()" style="background: linear-gradient(135deg, #7c3aed, #00d4ff); padding: 18px 40px; font-size: 16px;">
-            🚀 Start Your Transformation - $999
-          </button>
-        </div>
-      </div>
-      
-      <!-- Emoji Rain -->
-      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden; opacity: 0.3;">
-        <div style="position: absolute; top: -30px; left: 15%; font-size: 20px; animation: emojiFall 6s linear infinite;">🎉</div>
-        <div style="position: absolute; top: -30px; left: 35%; font-size: 18px; animation: emojiFall 7s linear infinite 1s;">✨</div>
-        <div style="position: absolute; top: -30px; left: 55%; font-size: 22px; animation: emojiFall 5s linear infinite 2s;">🚀</div>
-        <div style="position: absolute; top: -30px; left: 75%; font-size: 20px; animation: emojiFall 8s linear infinite 0.5s;">💎</div>
-        <div style="position: absolute; top: -30px; left: 85%; font-size: 18px; animation: emojiFall 6s linear infinite 3s;">🔥</div>
-      </div>
-      
-      <style>
-        @keyframes ringRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes portalPulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; } 50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; } }
-        @keyframes studentLoop1 { 0% { left: -80px; } 30% { left: calc(50% - 100px); transform: scale(1); } 35% { left: calc(50% - 30px); transform: scale(0.8); opacity: 1; } 40% { left: calc(50% - 30px); transform: scale(0.8); } 45% { left: calc(50% + 30px); transform: scale(1.1); } 50% { left: calc(50% + 100px); transform: scale(1); } 100% { left: 110%; } }
-        @keyframes studentLoop2 { 0% { left: -80px; } 30% { left: calc(50% - 100px); transform: scale(1); } 35% { left: calc(50% - 30px); transform: scale(0.8); opacity: 1; } 40% { left: calc(50% - 30px); transform: scale(0.8); } 45% { left: calc(50% + 30px); transform: scale(1.1); } 50% { left: calc(50% + 100px); transform: scale(1); } 100% { left: 110%; } }
-        @keyframes studentLoop3 { 0% { left: -80px; } 30% { left: calc(50% - 100px); transform: scale(1); } 35% { left: calc(50% - 30px); transform: scale(0.8); opacity: 1; } 40% { left: calc(50% - 30px); transform: scale(0.8); } 45% { left: calc(50% + 30px); transform: scale(1.1); } 50% { left: calc(50% + 100px); transform: scale(1); } 100% { left: 110%; } }
-        @keyframes sadState {
-        0% { opacity: 1; }
-        32% { opacity: 1; }
-        40% { opacity: 0; }
-        100% { opacity: 0; }
-      }
-      @keyframes happyState {
-        0% { opacity: 0; }
-        40% { opacity: 0; }
-        48% { opacity: 1; }
-        100% { opacity: 1; }
-      }  @keyframes tagSadAnim { 0%, 38% { opacity: 1; } 42%, 100% { opacity: 0; } }
-        @keyframes tagHappyAnim { 0%, 42% { opacity: 0; } 46%, 100% { opacity: 1; } }
-        @keyframes emojiFall { to { transform: translateY(500px) rotate(360deg); } }
-      </style>
-    </section>
-
-    <section class="platform-features">
-      <div class="platform-tagline">🌟 Everything on ONE Platform 🌟</div>
-      <p style="color: rgba(255,255,255,0.8); max-width: 800px; margin: 0 auto; font-size: 16px;">
-        seekhowithrua.com — Learning + Gaming + AI Chat + Live Voice + Ranks + Hackathons
-      </p>
-      
-      <!-- Visit Our Platform Buttons -->
-      <div style="display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap;">
-        <a href="https://seekhowithrua.com" target="_blank" style="background: linear-gradient(135deg, #7c3aed, #00d4ff); color: #fff; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4); transition: all 0.3s;">
-          🌐 Know Our Vision →
-        </a>
-        <a href="https://app.seekhowithrua.com" target="_blank" style="background: linear-gradient(135deg, #00ff88, #00d4ff); color: #000; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 8px 32px rgba(0, 255, 136, 0.4); transition: all 0.3s;">
-          🚀 Experience the App →
-        </a>
-      </div>
-      <p style="text-align: center; color: rgba(255,255,255,0.6); font-size: 13px; margin-top: 15px;">
-        💡 Visit to know our experience, trainer details & platform vision
-      </p>
-    </section>
-
+    <!-- AI MODELS & TOOLS SHOWCASE -->
     <section class="features-section">
-      <h2 class="section-title">🚀 Latest AI Models & Tools Covered</h2>
-
+      <h2 class="section-title">🤖 Latest AI Models & Tools Covered</h2>
       <div class="features-grid">
         <div class="feature-card">
           <span class="feature-badge hot">NEW</span>
           <div class="feature-icon">🧠</div>
           <h3>Claude AI (Anthropic)</h3>
-          <p>Master Claude 3.5 Sonnet for complex reasoning, coding, and analysis. Build applications with Claude's API, implement document analysis, code generation, and AI pair programming with Claude Coworker.</p>
+          <p>Master Claude 3.5 Sonnet for complex reasoning, coding, and analysis. Learn to build applications with Claude's API, understand prompt engineering for Claude, and implement advanced use cases like document analysis and code generation.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-badge hot">NEW</span>
+          <div class="feature-icon">👨‍💻</div>
+          <h3>Claude AI Coworker</h3>
+          <p>Learn to use Claude as your AI pair programmer. Build entire projects collaboratively, debug code, refactor legacy systems, and create production-ready applications with Claude's help. Master the art of AI-assisted development.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-badge premium">GEN AI</span>
           <div class="feature-icon">🎨</div>
           <h3>Generative AI Mastery</h3>
-          <p>Deep dive into GPT-4o, Gemini Pro, DALL-E 3, Midjourney, and Stable Diffusion. Build text-to-image, text-to-code applications. Learn fine-tuning, embeddings, and custom model deployment.</p>
+          <p>Deep dive into GPT-4o, Gemini Pro, DALL-E 3, Midjourney, and Stable Diffusion. Build text-to-image, text-to-code, and text-to-video applications. Learn fine-tuning, embeddings, and custom model deployment.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-badge new">AGENTIC</span>
           <div class="feature-icon">🤖</div>
           <h3>Agentic AI & Autonomous Agents</h3>
-          <p>Build self-directed AI agents using AutoGPT, BabyAGI, and CrewAI. Create agents that can plan, execute, and iterate on complex tasks. Learn multi-agent orchestration and agent-to-agent communication.</p>
+          <p>Build self-directed AI agents using AutoGPT, BabyAGI, and CrewAI. Create agents that can plan, execute, and iterate on complex tasks. Learn multi-agent orchestration and agent-to-agent communication protocols.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-badge premium">RAG</span>
           <div class="feature-icon">🔍</div>
           <h3>RAG & Vector Databases</h3>
-          <p>Master Retrieval-Augmented Generation with Pinecone, Weaviate, ChromaDB. Build intelligent document search systems, chat with documents, and implement semantic search for enterprise applications.</p>
+          <p>Master Retrieval-Augmented Generation with Pinecone, Weaviate, ChromaDB, and Qdrant. Build intelligent document search systems, chat with your documents, and implement semantic search for enterprise applications.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-badge premium">TOOLS</span>
-          <div class="feature-icon">�</div>
+          <div class="feature-icon">🔗</div>
           <h3>LangChain & n8n</h3>
-          <p>Build AI workflows with LangChain framework and n8n automation. Create chains, agents, and tools. Connect 400+ apps, build no-code AI automations, and deploy production-ready AI pipelines.</p>
+          <p>Build AI workflows with LangChain framework and n8n automation. Create chains, agents, and tools. Connect 400+ apps, build no-code AI automations, and deploy production-ready AI pipelines with visual workflow builders.</p>
         </div>
 
         <div class="feature-card">
           <span class="feature-badge premium">PROMPT</span>
           <div class="feature-icon">📝</div>
           <h3>Advanced Prompt Engineering</h3>
-          <p>Master Chain-of-Thought, Tree-of-Thoughts, ReAct, and few-shot prompting. Build prompt templates, optimize token usage, create dynamic prompts, and evaluate prompt effectiveness for production systems.</p>
+          <p>Master Chain-of-Thought, Tree-of-Thoughts, ReAct, and few-shot prompting. Learn to build prompt templates, optimize token usage, create dynamic prompts, and evaluate prompt effectiveness for production systems.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-badge premium">DATA</span>
+          <div class="feature-icon">📊</div>
+          <h3>Data Science & MLOps</h3>
+          <p>Complete data science pipeline from EDA to deployment. Master Python, Pandas, Scikit-learn, TensorFlow, PyTorch. Learn MLflow, Kubeflow, and production model serving with Docker and Kubernetes.</p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-badge new">DEPLOY</span>
+          <div class="feature-icon">🚀</div>
+          <h3>Deployment & DevOps</h3>
+          <p>Deploy AI/ML models to AWS, Azure, GCP, and edge devices. Learn Docker containerization, Kubernetes orchestration, CI/CD for ML, serverless deployment with Lambda, and API development with FastAPI.</p>
         </div>
       </div>
     </section>
 
+    <!-- LEARNING TIERS -->
     <section class="tiers-section">
-      <h2 class="section-title">📚 Your Learning Journey</h2>
+      <h2 class="section-title">📚 Your Learning Journey (6 Months)</h2>
 
       <div class="tiers-grid">
         <div class="tier-card unlocked">
-          <span class="tier-status unlocked">🔓 START HERE</span>
+          <span class="tier-status unlocked">🔓 MONTH 1</span>
           <div class="tier-icon">📊</div>
-          <h3>Data Science Basics</h3>
-          <p class="tier-duration">⏱️ Month 1 • Foundation</p>
+          <h3>Data Science Foundations</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Foundation</p>
           <ul class="tier-features">
             <li>Python for Data Science</li>
-            <li>NumPy & Pandas Mastery</li>
-            <li>Data Visualization</li>
+            <li>NumPy, Pandas, Matplotlib</li>
             <li>Statistical Analysis</li>
-            <li>Gaming: Data Quiz Challenges</li>
-            <li>3-Day Demo Class FREE</li>
-            <li>REST ALL PAID COURSE</li>
+            <li>Data Visualization</li>
+            <li>EDA & Feature Engineering</li>
+            <li>ML Fundamentals</li>
+            <li>Project: Sales Forecasting</li>
           </ul>
-          <button class="btn-start" onclick="startCourse('basic')">Start 3-Day Demo →</button>
+          <button class="btn-start" onclick="startCourse('data-science')">Start Learning →</button>
         </div>
 
         <div class="tier-card locked">
-          <span class="tier-status locked">🔒 PREMIUM</span>
+          <span class="tier-status locked">🔒 MONTH 2</span>
           <div class="tier-icon">🤖</div>
-          <h3>Machine Learning & AI</h3>
-          <p class="tier-duration">⏱️ Months 2-3 • Advanced</p>
+          <h3>Generative AI & LLMs</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Intermediate</p>
           <ul class="tier-features">
-            <li>Supervised & Unsupervised ML</li>
-            <li>Deep Learning with TensorFlow</li>
-            <li>Neural Networks</li>
-            <li>Computer Vision & NLP</li>
-            <li>Unlimited AI Chat Support</li>
-            <li>Live Voice Chat Mentorship</li>
+            <li>LLM Architecture & Training</li>
+            <li>GPT-4o, Claude, Gemini API</li>
+            <li>Prompt Engineering Mastery</li>
+            <li>Text Generation & Summarization</li>
+            <li>Chatbot Development</li>
+            <li>Image Generation (DALL-E, SD)</li>
+            <li>Project: AI Content Generator</li>
           </ul>
           <button class="btn-unlock" onclick="showUnlockModal()">🔓 Unlock with Bundle</button>
         </div>
 
         <div class="tier-card locked">
-          <span class="tier-status locked">🔒 PREMIUM</span>
+          <span class="tier-status locked">🔒 MONTH 3</span>
+          <div class="tier-icon">🔗</div>
+          <h3>LangChain & Agentic AI</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Advanced</p>
+          <ul class="tier-features">
+            <li>LangChain Core Concepts</li>
+            <li>Chains, Agents & Tools</li>
+            <li>Memory & Conversation</li>
+            <li>Agentic AI with AutoGPT</li>
+            <li>Multi-Agent Systems</li>
+            <li>n8n Workflow Automation</li>
+            <li>Project: AI Research Agent</li>
+          </ul>
+          <button class="btn-unlock" onclick="showUnlockModal()">🔓 Unlock with Bundle</button>
+        </div>
+
+        <div class="tier-card locked">
+          <span class="tier-status locked">🔒 MONTH 4</span>
+          <div class="tier-icon">🔍</div>
+          <h3>RAG & Vector Databases</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Advanced</p>
+          <ul class="tier-features">
+            <li>Embeddings & Vectorization</li>
+            <li>Pinecone, ChromaDB, Weaviate</li>
+            <li>Document Chunking Strategies</li>
+            <li>Semantic Search Systems</li>
+            <li>Chat with Documents</li>
+            <li>Enterprise RAG Architecture</li>
+            <li>Project: Enterprise Knowledge Base</li>
+          </ul>
+          <button class="btn-unlock" onclick="showUnlockModal()">🔓 Unlock with Bundle</button>
+        </div>
+
+        <div class="tier-card locked">
+          <span class="tier-status locked">🔒 MONTH 5</span>
           <div class="tier-icon">💻</div>
-          <h3>Web & App Implementation</h3>
-          <p class="tier-duration">⏱️ Month 4 • Implementation</p>
+          <h3>Full Stack AI Development</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Advanced</p>
           <ul class="tier-features">
-            <li>Build ML Web Apps</li>
-            <li>Deploy AI Models to Cloud</li>
-            <li>React + ML Integration</li>
-            <li>Mobile App with AI</li>
-            <li>Full-Stack Data Projects</li>
-            <li>Hackathon Ready Projects</li>
+            <li>React + AI Integration</li>
+            <li>FastAPI for ML Services</li>
+            <li>Streamlit Dashboards</li>
+            <li>Real-time AI Features</li>
+            <li>Mobile AI Apps (React Native)</li>
+            <li>Edge AI Deployment</li>
+            <li>Project: AI SaaS Platform</li>
           </ul>
           <button class="btn-unlock" onclick="showUnlockModal()">🔓 Unlock with Bundle</button>
         </div>
 
         <div class="tier-card locked">
-          <span class="tier-status locked">🔒 BONUS</span>
+          <span class="tier-status locked">🔒 MONTH 6</span>
           <div class="tier-icon">🚀</div>
-          <h3>Ranks, Hackathons & Career</h3>
-          <p class="tier-duration">⏱️ Month 5 • Career Boost</p>
+          <h3>Deployment & Career</h3>
+          <p class="tier-duration">⏱️ 4 Weeks • Expert</p>
           <ul class="tier-features">
-            <li>Rank Up Through Challenges</li>
-            <li>Priority Hackathon Access</li>
-            <li>Company Referrals</li>
-            <li>100% Job Assurance</li>
-            <li>6-Month Internship</li>
-            <li>Start Earning While Learning</li>
+            <li>Docker & Kubernetes for ML</li>
+            <li>AWS/Azure/GCP Deployment</li>
+            <li>CI/CD for AI/ML Pipelines</li>
+            <li>MLOps Best Practices</li>
+            <li>Monitoring & Observability</li>
+            <li>Capstone Industry Project</li>
+            <li>Job Placement Support</li>
           </ul>
           <button class="btn-unlock" onclick="showUnlockModal()">🔓 Unlock with Bundle</button>
         </div>
       </div>
     </section>
 
+    <!-- INDUSTRY PROJECTS SECTION -->
+    <section class="projects-section">
+      <h2 class="section-title">🏭 Industry-Level Projects with Full Guidance</h2>
+      <p style="text-align: center; color: rgba(255,255,255,0.7); max-width: 800px; margin: 0 auto 40px;">
+        Build 12+ real-world projects that you can showcase to employers. Each project comes with detailed architecture, code templates, deployment guides, and mentorship support.
+      </p>
+
+      <div class="projects-grid">
+        <div class="project-card">
+          <span class="project-number">01</span>
+          <div class="project-icon">💬</div>
+          <h3>AI Customer Support Chatbot</h3>
+          <div class="project-tags">
+            <span class="project-tag">Claude API</span>
+            <span class="project-tag">RAG</span>
+            <span class="project-tag">FastAPI</span>
+          </div>
+          <p>Build an intelligent customer support bot using Claude AI with RAG for accurate product answers. Includes sentiment analysis, conversation history, and human handoff.</p>
+          <div class="project-outcome">🎯 Outcome: Production-ready chatbot with 90%+ accuracy</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">02</span>
+          <div class="project-icon">📄</div>
+          <h3>Document Intelligence System</h3>
+          <div class="project-tags">
+            <span class="project-tag">GPT-4o</span>
+            <span class="project-tag">LangChain</span>
+            <span class="project-tag">Pinecone</span>
+          </div>
+          <p>Enterprise document analysis platform. Upload PDFs, Word docs, spreadsheets and get AI-powered summaries, insights, and Q&A. Full RAG implementation with chunking strategies.</p>
+          <div class="project-outcome">🎯 Outcome: Process 1000+ page documents with semantic search</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">03</span>
+          <div class="project-icon">🎨</div>
+          <h3>AI Content Generator SaaS</h3>
+          <div class="project-tags">
+            <span class="project-tag">Gen AI</span>
+            <span class="project-tag">Stripe</span>
+            <span class="project-tag">Next.js</span>
+          </div>
+          <p>Full-stack SaaS platform for generating blogs, social media posts, images, and videos. Includes user auth, subscription management, and content scheduling.</p>
+          <div class="project-outcome">🎯 Outcome: Monetizable SaaS product with paying customers</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">04</span>
+          <div class="project-icon">🔍</div>
+          <h3>AI-Powered Job Matcher</h3>
+          <div class="project-tags">
+            <span class="project-tag">NLP</span>
+            <span class="project-tag">Scikit</span>
+            <span class="project-tag">React</span>
+          </div>
+          <p>Resume parser and job matching system using NLP. Automatically extract skills from CVs, match with job descriptions, and provide skill gap analysis with learning paths.</p>
+          <div class="project-outcome">🎯 Outcome: 85%+ match accuracy with skill recommendations</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">05</span>
+          <div class="project-icon">📊</div>
+          <h3>Predictive Sales Analytics</h3>
+          <div class="project-tags">
+            <span class="project-tag">ML</span>
+            <span class="project-tag">TensorFlow</span>
+            <span class="project-tag">Plotly</span>
+          </div>
+          <p>End-to-end sales forecasting dashboard with time-series forecasting, trend analysis, and automated report generation. Includes real-time data pipeline.</p>
+          <div class="project-outcome">🎯 Outcome: Forecast with 95% accuracy, automated insights</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">06</span>
+          <div class="project-icon">🤖</div>
+          <h3>Autonomous Research Agent</h3>
+          <div class="project-tags">
+            <span class="project-tag">AutoGPT</span>
+            <span class="project-tag">n8n</span>
+            <span class="project-tag">SerpAPI</span>
+          </div>
+          <p>Build an AI agent that researches topics, collects data from web/APIs, analyzes findings, and generates comprehensive reports. Full autonomous workflow with n8n orchestration.</p>
+          <div class="project-outcome">🎯 Outcome: Self-researching agent for any topic</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">07</span>
+          <div class="project-icon">🎙️</div>
+          <h3>AI Meeting Assistant</h3>
+          <div class="project-tags">
+            <span class="project-tag">Whisper</span>
+            <span class="project-tag">Claude</span>
+            <span class="project-tag">WebRTC</span>
+          </div>
+          <p>Real-time meeting transcription, summarization, and action item extraction. Integrates with Zoom/Meet APIs. Generates follow-up emails and calendar events automatically.</p>
+          <div class="project-outcome">🎯 Outcome: Complete meeting automation system</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">08</span>
+          <div class="project-icon">🏥</div>
+          <h3>Healthcare Diagnosis Assistant</h3>
+          <div class="project-tags">
+            <span class="project-tag">Computer Vision</span>
+            <span class="project-tag">PyTorch</span>
+            <span class="project-tag">FHIR</span>
+          </div>
+          <p>Medical image analysis system for X-ray/MRI classification using deep learning. Includes HIPAA-compliant architecture, explainable AI, and clinical report generation.</p>
+          <div class="project-outcome">🎯 Outcome: Clinical-grade diagnostic aid system</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">09</span>
+          <div class="project-icon">🛒</div>
+          <h3>AI E-commerce Optimizer</h3>
+          <div class="project-tags">
+            <span class="project-tag">Recommendation</span>
+            <span class="project-tag">NLP</span>
+            <span class="project-tag">Django</span>
+          </div>
+          <p>Intelligent product recommendations, dynamic pricing, review sentiment analysis, and AI-powered product descriptions. Includes A/B testing framework.</p>
+          <div class="project-outcome">🎯 Outcome: 40%+ revenue uplift with AI features</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">10</span>
+          <div class="project-icon">🔒</div>
+          <h3>AI Fraud Detection System</h3>
+          <div class="project-tags">
+            <span class="project-tag">Anomaly Detection</span>
+            <span class="project-tag">XGBoost</span>
+            <span class="project-tag">Kafka</span>
+          </div>
+          <p>Real-time fraud detection for financial transactions using anomaly detection and graph analysis. Sub-millisecond response with Apache Kafka streaming.</p>
+          <div class="project-outcome">🎯 Outcome: 99.5% fraud detection with <0.1% false positives</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">11</span>
+          <div class="project-icon">🌐</div>
+          <h3>Multi-Modal AI Search Engine</h3>
+          <div class="project-tags">
+            <span class="project-tag">CLIP</span>
+            <span class="project-tag">Weaviate</span>
+            <span class="project-tag">FastAPI</span>
+          </div>
+          <p>Search across text, images, and videos with natural language queries. Uses CLIP embeddings, vector search, and generative AI for result summaries.</p>
+          <div class="project-outcome">🎯 Outcome: Google-like multimodal search experience</div>
+        </div>
+
+        <div class="project-card">
+          <span class="project-number">12</span>
+          <div class="project-icon">📱</div>
+          <h3>AI Mobile App Builder</h3>
+          <div class="project-tags">
+            <span class="project-tag">React Native</span>
+            <span class="project-tag">TensorFlow Lite</span>
+            <span class="project-tag">Firebase</span>
+          </div>
+          <p>Cross-platform mobile app with on-device AI capabilities. Includes image recognition, voice commands, and offline AI inference with TensorFlow Lite.</p>
+          <div class="project-outcome">🎯 Outcome: Published app on App Store & Play Store</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPLOYMENT TOOLS -->
+    <section class="features-section">
+      <h2 class="section-title">🚀 Deployment & DevOps Tools You'll Master</h2>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">🐳</div>
+          <h4>Docker</h4>
+          <p>Containerize ML models</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">☸️</div>
+          <h4>Kubernetes</h4>
+          <p>Orchestrate AI workloads</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">⚡</div>
+          <h4>AWS Lambda</h4>
+          <p>Serverless AI inference</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🌩️</div>
+          <h4>AWS SageMaker</h4>
+          <p>ML model training & hosting</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔷</div>
+          <h4>Azure ML</h4>
+          <p>Enterprise ML platform</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔶</div>
+          <h4>GCP Vertex AI</h4>
+          <p>Google's ML suite</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔄</div>
+          <h4>MLflow</h4>
+          <p>ML lifecycle management</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🌿</div>
+          <h4>GitHub Actions</h4>
+          <p>CI/CD for ML pipelines</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🚀</div>
+          <h4>Vercel/Netlify</h4>
+          <p>Frontend AI app hosting</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🌐</div>
+          <h4>FastAPI</h4>
+          <p>High-performance ML APIs</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📊</div>
+          <h4>Streamlit</h4>
+          <p>ML app dashboards</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🔍</div>
+          <h4>LangServe</h4>
+          <p>Deploy LangChain apps</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA SECTION -->
     <section class="cta-section">
-      <h2 class="section-title">Ready to Master Data Science & AI?</h2>
+      <h2 class="section-title">Ready to Become an AI Engineer?</h2>
       <p style="color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 15px;">
-        Join the all-in-one platform: seekhowithrua.com
+        Join 1000+ students building the future with AI
       </p>
       <p style="color: rgba(255,255,255,0.6); margin-bottom: 30px;">
-        Gaming • Unlimited AI • Live Voice • Ranks • Hackathons • Job Assurance
+        6 Months • 12+ Projects • Job Guarantee • $999 Only
       </p>
       <button class="btn-main-cta" onclick="enrollNow()">
         <span>🚀</span> Get Full Access Now
       </button>
 
       <!-- CONTACT SUPPORT SECTION -->
-      <div style="margin-top: 40px; padding: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 15px;">
+      <div style="margin-top: 40px; padding: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 15px; max-width: 800px; margin-left: auto; margin-right: auto;">
         <h3 style="font-family: 'Orbitron', sans-serif; font-size: 20px; color: #00d4ff; margin-bottom: 20px;">📞 Need Help? Contact Us</h3>
         
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
-          <!-- Phone -->
           <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <div style="font-size: 30px; margin-bottom: 10px;">📱</div>
             <h4 style="color: #fff; margin-bottom: 5px;">Give us a Call</h4>
@@ -879,7 +1144,6 @@
             <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 5px;">For any queries</p>
           </div>
           
-          <!-- WhatsApp -->
           <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <div style="font-size: 30px; margin-bottom: 10px;">💬</div>
             <h4 style="color: #fff; margin-bottom: 5px;">Book 1-on-1 with Expert</h4>
@@ -887,7 +1151,6 @@
             <p style="color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 5px;">WhatsApp us anytime</p>
           </div>
           
-          <!-- Email -->
           <div style="text-align: center; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px;">
             <div style="font-size: 30px; margin-bottom: 10px;">📧</div>
             <h4 style="color: #fff; margin-bottom: 5px;">Email Support</h4>
@@ -898,7 +1161,7 @@
         
         <div style="margin-top: 20px; padding: 15px; background: rgba(0, 255, 136, 0.1); border-radius: 10px; border-left: 4px solid #00ff88;">
           <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin: 0;">
-            <strong>💡 Quick Tip:</strong> WhatsApp us to book a <strong>FREE 1-on-1 session</strong> with our expert before enrolling!
+            <strong>💡 Quick Tip:</strong> WhatsApp us to book a <strong>FREE 1-on-1 session</strong> with our AI expert before enrolling!
           </p>
         </div>
       </div>
@@ -908,19 +1171,19 @@
   <div class="modal-overlay" id="unlockModal">
     <div class="modal-content">
       <button class="modal-close" onclick="closeModal()">&times;</button>
-      <h3 class="modal-title">🔓 Unlock Complete Platform</h3>
+      <h3 class="modal-title">🔓 Unlock Complete AI Mastery</h3>
       <p style="color: rgba(255,255,255,0.8); margin-bottom: 25px; font-size: 14px;">
-        Get instant access to the FULL platform at seekhowithrua.com:
+        Get instant access to the FULL AI/ML curriculum:
       </p>
 
       <ul class="benefit-list">
-        <li><span class="benefit-icon">📚</span><div><strong>All 4 Learning Tiers</strong><br><small style="color: rgba(255,255,255,0.6)">Basics → ML → Web/App → Career</small></div></li>
-        <li><span class="benefit-icon">🎮</span><div><strong>Unlimited Gaming Access</strong><br><small style="color: rgba(255,255,255,0.6)">Quizzes, hurdles, animations for every topic</small></div></li>
-        <li><span class="benefit-icon">🤖</span><div><strong>Unlimited AI Chat (Groq + GPT-3.5)</strong><br><small style="color: rgba(255,255,255,0.6)">No limits, faster than ChatGPT</small></div></li>
-        <li><span class="benefit-icon">🎙️</span><div><strong>Live Voice Chatrooms</strong><br><small style="color: rgba(255,255,255,0.6)">Unlimited access, 24/7 community</small></div></li>
-        <li><span class="benefit-icon">🏆</span><div><strong>Rank System + Hackathons</strong><br><small style="color: rgba(255,255,255,0.6)">Earn while learning, get company picks</small></div></li>
-        <li><span class="benefit-icon">📹</span><div><strong>Live + Recorded + Smart Notes</strong><br><small style="color: rgba(255,255,255,0.6)">All sessions with AI summaries</small></div></li>
-        <li><span class="benefit-icon">💼</span><div><strong>100% Job Assurance + 6-Month Internship</strong><br><small style="color: rgba(255,255,255,0.6)">Resume, interviews, referrals, 6-month paid internship</small></div></li>
+        <li><span class="benefit-icon">📚</span><div><strong>6 Months of Learning</strong><br><small style="color: rgba(255,255,255,0.6)">Data Science → Gen AI → LangChain → RAG → Full Stack → Deployment</small></div></li>
+        <li><span class="benefit-icon">🏭</span><div><strong>12+ Industry Projects</strong><br><small style="color: rgba(255,255,255,0.6)">Production-ready projects for your portfolio</small></div></li>
+        <li><span class="benefit-icon">🧠</span><div><strong>Latest AI Models</strong><br><small style="color: rgba(255,255,255,0.6)">Claude AI, GPT-4o, Gemini, Coworker, Llama, Mistral</small></div></li>
+        <li><span class="benefit-icon">🔗</span><div><strong>LangChain & n8n</strong><br><small style="color: rgba(255,255,255,0.6)">Build AI workflows and automations</small></div></li>
+        <li><span class="benefit-icon">🔍</span><div><strong>RAG & Vector DBs</strong><br><small style="color: rgba(255,255,255,0.6)">Pinecone, ChromaDB, Weaviate mastery</small></div></li>
+        <li><span class="benefit-icon">🚀</span><div><strong>Deployment Training</strong><br><small style="color: rgba(255,255,255,0.6)">AWS, Azure, GCP, Docker, Kubernetes</small></div></li>
+        <li><span class="benefit-icon">💼</span><div><strong>100% Job Assurance</strong><br><small style="color: rgba(255,255,255,0.6)">Resume, interviews, referrals, placement</small></div></li>
       </ul>
 
       <div style="text-align: center; margin-top: 30px;">
@@ -928,7 +1191,7 @@
           🔓 Unlock Everything for $999
         </button>
         <p style="color: rgba(255,255,255,0.6); margin-top: 15px; font-size: 14px;">
-          One platform. Everything included. seekhowithrua.com
+          One course. Everything included. Full guidance always.
         </p>
       </div>
     </div>
@@ -937,7 +1200,7 @@
   <script src="js/lms.js"></script>
   <script>
     const RAZORPAY_KEY_ID = 'rzp_test_SYNmgL82IxXJu6';
-    const VALID_COUPONS = ['SUPERTCLASSES', 'SEEKHOWITHURAKNOWN'];
+    const VALID_COUPONS = ['AIMASTER2024', 'SEEKHOWITHRUA'];
     const CONCESSION_PRICE = 999;
     const REGULAR_PRICE = 1499;
     let SELECTED_PRICE = CONCESSION_PRICE;
@@ -995,7 +1258,7 @@
       }
 
       if (VALID_COUPONS.includes(code)) {
-        document.getElementById('finalPrice').textContent = '₹4,999';
+        document.getElementById('finalPrice').textContent = '$999';
         showMessage(`✓ ${code} applied! You saved $500`, 'success');
         document.querySelector('.coupon-section').style.borderColor = '#00ff88';
 
@@ -1008,7 +1271,7 @@
         price.style.transition = 'transform 0.3s';
         setTimeout(() => price.style.transform = 'scale(1)', 300);
       } else {
-        showMessage('Invalid coupon. Try SUPERTCLASSES or SEEKHOWITHURAKNOWN', 'error');
+        showMessage('Invalid coupon. Try AIMASTER2024 or SEEKHOWITHRUA', 'error');
       }
     }
 
@@ -1045,7 +1308,7 @@
     });
 
     function startCourse(tier) {
-      window.location.href = 'course.html?course=data-science-basics&video=0';
+      window.location.href = 'course.html?course=fullstack-aiml&video=0';
     }
 
     function enrollNow() {
@@ -1069,13 +1332,13 @@
         amount: finalPrice * 100,
         currency: 'USD',
         name: 'SeekhoWithRua',
-        description: `Data Science & AI Bundle - Full Platform Access${appliedCoupon ? ' (Coupon: ' + appliedCoupon + ')' : ''}`,
+        description: `Full Stack AI ML Course - Complete Bundle${appliedCoupon ? ' (Coupon: ' + appliedCoupon + ')' : ''}`,
         image: 'https://seekhowithrua.com/logo.png',
         handler: function(response) {
           const paymentData = {
             name: userName,
             email: userEmail,
-            course: 'Data Science AI Bundle',
+            course: 'Full Stack AI ML',
             amount: finalPrice,
             coupon: appliedCoupon,
             paymentId: response.razorpay_payment_id,
@@ -1086,7 +1349,7 @@
           enrolled.push(paymentData);
           localStorage.setItem('lms_enrolled', JSON.stringify(enrolled));
 
-          window.location.href = `payment-success.html?payment=${response.razorpay_payment_id}&email=${encodeURIComponent(userEmail)}&course=ds-ai-bundle`;
+          window.location.href = `payment-success.html?payment=${response.razorpay_payment_id}&email=${encodeURIComponent(userEmail)}&course=fullstack-aiml`;
         },
         prefill: {
           name: userName,
