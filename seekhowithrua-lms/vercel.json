@@ -11,6 +11,54 @@
       "dest": "/api/chat.js"
     },
     {
+      "src": "/seekhowithrua-quizes/(.*)",
+      "dest": "/seekhowithrua-quizes/index.html"
+    },
+    {
+      "src": "/seekhowithrua-quizes",
+      "dest": "/seekhowithrua-quizes/index.html"
+    },
+    {
+      "src": "/seekhowithrua-gaming/(.*)",
+      "dest": "/seekhowithrua-gaming/index.html"
+    },
+    {
+      "src": "/seekhowithrua-gaming",
+      "dest": "/seekhowithrua-gaming/index.html"
+    },
+    {
+      "src": "/seekhowithrua-animation/(.*)",
+      "dest": "/seekhowithrua-animation/index.html"
+    },
+    {
+      "src": "/seekhowithrua-animation",
+      "dest": "/seekhowithrua-animation/index.html"
+    },
+    {
+      "src": "/seekhowithrua-aiAgentBuilder/(.*)",
+      "dest": "/seekhowithrua-aiAgentBuilder/index.html"
+    },
+    {
+      "src": "/seekhowithrua-aiAgentBuilder",
+      "dest": "/seekhowithrua-aiAgentBuilder/index.html"
+    },
+    {
+      "src": "/seekhowithrua-websiteBuilder/(.*)",
+      "dest": "/seekhowithrua-websiteBuilder/index.html"
+    },
+    {
+      "src": "/seekhowithrua-websiteBuilder",
+      "dest": "/seekhowithrua-websiteBuilder/index.html"
+    },
+    {
+      "src": "/seekhowithrua-appBuilder/(.*)",
+      "dest": "/seekhowithrua-appBuilder/index.html"
+    },
+    {
+      "src": "/seekhowithrua-appBuilder",
+      "dest": "/seekhowithrua-appBuilder/index.html"
+    },
+    {
       "src": "/aiMaster/(.*)",
       "dest": "/aiMaster/index.html"
     },
